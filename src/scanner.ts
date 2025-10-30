@@ -60,18 +60,23 @@ export async function scan(directory?: string, excludePatterns?: string) {
 
   try {
     const searchPath = selectedDirectory || '.';
-    const files = glob.sync(`${searchPath}/**/*`, { ignore: exclusions, dot: true });
-    spinner.succeed(`Found ${files.length} files.`);
+    const files = glob.sync(`${searchPath}/**/*`, { ignore: exclusions, dot: true, nodir: true });
+
+    // Convert all file paths to absolute paths for consistent dependency resolution
+    const absoluteFiles = files.map(file => path.resolve(file));
+    const filesSet = new Set(absoluteFiles);
+
+    spinner.succeed(`Found ${absoluteFiles.length} files.`);
 
     const dependencies = new Map<string, string[]>();
-    for (const file of files) {
-      const deps = detectDependencies(file);
+    for (const file of absoluteFiles) {
+      const deps = detectDependencies(file, filesSet);
       if (deps.length > 0) {
         dependencies.set(file, deps);
       }
     }
 
-    generateHtml(files, dependencies);
+    generateHtml(absoluteFiles, dependencies);
   } catch (error) {
     spinner.fail('Failed to scan files.');
     console.error(error);

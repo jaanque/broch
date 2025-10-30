@@ -104,16 +104,19 @@ function scan(directory, excludePatterns) {
         const spinner = (0, ora_1.default)(`Scanning files in ${selectedDirectory}...`).start();
         try {
             const searchPath = selectedDirectory || '.';
-            const files = glob.sync(`${searchPath}/**/*`, { ignore: exclusions, dot: true });
-            spinner.succeed(`Found ${files.length} files.`);
+            const files = glob.sync(`${searchPath}/**/*`, { ignore: exclusions, dot: true, nodir: true });
+            // Convert all file paths to absolute paths for consistent dependency resolution
+            const absoluteFiles = files.map(file => path_1.default.resolve(file));
+            const filesSet = new Set(absoluteFiles);
+            spinner.succeed(`Found ${absoluteFiles.length} files.`);
             const dependencies = new Map();
-            for (const file of files) {
-                const deps = (0, dependencies_1.detectDependencies)(file);
+            for (const file of absoluteFiles) {
+                const deps = (0, dependencies_1.detectDependencies)(file, filesSet);
                 if (deps.length > 0) {
                     dependencies.set(file, deps);
                 }
             }
-            (0, html_1.generateHtml)(files, dependencies);
+            (0, html_1.generateHtml)(absoluteFiles, dependencies);
         }
         catch (error) {
             spinner.fail('Failed to scan files.');
