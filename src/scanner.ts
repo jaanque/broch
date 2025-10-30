@@ -1,7 +1,7 @@
 import * as glob from 'glob';
-import ora from 'ora';
 import { lstatSync, readdirSync } from 'fs';
 import { detectDependencies } from './dependencies';
+import cliProgress from 'cli-progress';
 import { generateHtml } from './html';
 import path from 'path';
 import inquirer from 'inquirer';
@@ -36,7 +36,8 @@ export async function scan(directory?: string, excludePatterns?: string) {
         exclusions.push(...excludePatterns.split(',').map((p: string) => p.trim()));
     }
 
-    const spinner = ora(`Scanning files in ${selectedDirectory}...`).start();
+    console.log(`Scanning files in ${selectedDirectory}...`);
+    const progressBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
 
     try {
         const searchPath = selectedDirectory || '.';
@@ -45,7 +46,8 @@ export async function scan(directory?: string, excludePatterns?: string) {
         const absoluteFiles = files.map(file => path.resolve(file));
         const filesSet = new Set(absoluteFiles);
 
-        spinner.succeed(`Found ${absoluteFiles.length} files.`);
+        console.log(`Found ${absoluteFiles.length} files.`);
+        progressBar.start(absoluteFiles.length, 0);
 
         const dependencies = new Map<string, string[]>();
         for (const file of absoluteFiles) {
@@ -53,11 +55,15 @@ export async function scan(directory?: string, excludePatterns?: string) {
             if (deps.length > 0) {
                 dependencies.set(file, deps);
             }
+            progressBar.increment();
+            await new Promise(resolve => setTimeout(resolve, 10));
         }
 
-        generateHtml(absoluteFiles, dependencies);
+        progressBar.stop();
+
+        generateHtml(absoluteFiles, dependencies, selectedDirectory);
     } catch (error) {
-        spinner.fail('Failed to scan files.');
-        console.error(error);
+        progressBar.stop();
+        console.error('Failed to scan files.', error);
     }
 }

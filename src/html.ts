@@ -52,8 +52,8 @@ const getFileMetadata = (filePath: string): string => {
   }
 }
 
-export function generateHtml(files: string[], dependencies: Map<string, string[]>) {
-  const outputFileName = config.outputFileName;
+export function generateHtml(files: string[], dependencies: Map<string, string[]>, selectedDirectory: string) {
+  const outputFilePath = path.join(selectedDirectory, config.outputFileName);
 
   const nodes: Node[] = files.map(file => ({
     id: file,
@@ -71,6 +71,26 @@ export function generateHtml(files: string[], dependencies: Map<string, string[]
       }
     }
   }
+
+  const legendHtml = Object.entries(config.colors).map(([key, color]) => {
+    const hex = color.replace('#', '');
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+    const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+    const textColor = (yiq >= 128) ? 'black' : 'white';
+    const capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
+
+    const label = {
+      js: 'JS/TS',
+      yml: 'YML',
+      md: 'Markdown',
+      py: 'Python',
+      java: 'Java'
+    }[key] || capitalizedKey;
+
+    return `<div style="background-color: ${color}; color: ${textColor}; padding: 3px 6px; margin-bottom: 3px; border-radius: 4px; font-size: 12px;">${label}</div>`;
+  }).join('');
 
   const htmlContent = `
     <!DOCTYPE html>
@@ -112,13 +132,7 @@ export function generateHtml(files: string[], dependencies: Map<string, string[]
         <div id="network"></div>
         <div id="legend">
           <h3>Color Legend</h3>
-          <div style="background-color: orange; color: white;">HTML</div>
-          <div style="background-color: green; color: white;">CSS</div>
-          <div style="background-color: blue; color: white;">JS/TS</div>
-          <div style="background-color: darkblue; color: white;">PHP</div>
-          <div style="background-color: pink;">Images</div>
-          <div style="background-color: gray; color: white;">Rust/Go</div>
-          <div style="background-color: lightgray;">Other</div>
+          ${legendHtml}
         </div>
         <button id="toggle-legend">Toggle Legend</button>
         <script type="text/javascript">
@@ -189,6 +203,6 @@ export function generateHtml(files: string[], dependencies: Map<string, string[]
     </html>
   `;
 
-  writeFileSync(outputFileName, htmlContent);
-  console.log(`Map generated: ${outputFileName}`);
+  writeFileSync(outputFilePath, htmlContent);
+  console.log(`Map generated: ${outputFilePath}`);
 }
