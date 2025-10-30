@@ -36,33 +36,39 @@ export async function scan(directory?: string, excludePatterns?: string) {
         exclusions.push(...excludePatterns.split(',').map((p: string) => p.trim()));
     }
 
-    console.log(`Scanning files in ${selectedDirectory}...`);
     const progressBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
+    progressBar.start(100, 0);
+
+    const duration = 4000;
+    const interval = 50;
+    let progress = 0;
+
+    const timer = setInterval(() => {
+        progress += (interval / duration) * 100;
+        progressBar.update(Math.min(progress, 100));
+    }, interval);
 
     try {
         const searchPath = selectedDirectory || '.';
         const files = glob.sync(`${searchPath}/**/*`, { ignore: exclusions, dot: true, nodir: true });
-
         const absoluteFiles = files.map(file => path.resolve(file));
         const filesSet = new Set(absoluteFiles);
-
-        console.log(`Found ${absoluteFiles.length} files.`);
-        progressBar.start(absoluteFiles.length, 0);
-
         const dependencies = new Map<string, string[]>();
+
         for (const file of absoluteFiles) {
             const deps = detectDependencies(file, filesSet);
             if (deps.length > 0) {
                 dependencies.set(file, deps);
             }
-            progressBar.increment();
-            await new Promise(resolve => setTimeout(resolve, 10));
         }
 
-        progressBar.stop();
-
-        generateHtml(absoluteFiles, dependencies, selectedDirectory);
+        setTimeout(() => {
+            clearInterval(timer);
+            progressBar.stop();
+            generateHtml(absoluteFiles, dependencies, selectedDirectory);
+        }, duration);
     } catch (error) {
+        clearInterval(timer);
         progressBar.stop();
         console.error('Failed to scan files.', error);
     }

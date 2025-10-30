@@ -1,7 +1,6 @@
 import { writeFileSync, statSync } from 'fs';
 import path from 'path';
 import config from './config';
-import cliProgress from 'cli-progress';
 
 interface Node {
   id: string;
@@ -224,28 +223,6 @@ export function generateHtml(files: string[], dependencies: Map<string, string[]
     </html>
   `;
 
-  const progressBar = new cliProgress.SingleBar({
-    format: 'Generating HTML |' + '{bar}' + '| {percentage}%',
-    barCompleteChar: '\u2588',
-    barIncompleteChar: '\u2591',
-    hideCursor: true
-  });
-
-  progressBar.start(100, 0);
-
-  const duration = 4000;
-  const interval = 50;
-  let progress = 0;
-
-  const timer = setInterval(() => {
-    progress += (interval / duration) * 100;
-    progressBar.update(Math.min(progress, 100));
-
-    if (progress >= 100) {
-      clearInterval(timer);
-      progressBar.stop();
-      writeFileSync(outputFilePath, htmlContent);
-      console.log(`\nMap generated: ${outputFilePath}`);
-    }
-  }, interval);
+  writeFileSync(outputFilePath, htmlContent);
+  console.log(`Map generated: ${outputFilePath}`);
 }
