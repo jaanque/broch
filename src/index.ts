@@ -30,7 +30,12 @@ cli.command('version, -v', 'Muestra la versión del paquete', () => {
   console.log('broch version 1.0.0');
 });
 
+cli.command('broch', 'Muestra la ayuda', () => {
+  cli.showHelp();
+});
+
 cli.help('help, -h')
 .usage('Uso: $0 <comando> [opciones]')
+.demandCommand(1, 'Debes proporcionar un comando. Usa "broch help" para ver la lista de comandos.')
 .epilogue('Para más información, visita nuestra documentación en https://github.com/your-repo/broch')
 .argv;
