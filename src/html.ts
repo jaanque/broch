@@ -1,6 +1,7 @@
 import { writeFileSync, statSync } from 'fs';
 import path from 'path';
 import config from './config';
+import cliProgress from 'cli-progress';
 
 interface Node {
   id: string;
@@ -54,6 +55,26 @@ const getFileMetadata = (filePath: string): string => {
 
 export function generateHtml(files: string[], dependencies: Map<string, string[]>, selectedDirectory: string) {
   const outputFilePath = path.join(selectedDirectory, config.outputFileName);
+
+  if (files.length === 0) {
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Broch Map</title>
+          <style>
+            body { display: flex; justify-content: center; align-items: center; height: 100vh; font-family: sans-serif; }
+          </style>
+        </head>
+        <body>
+          <h1>No nodes found in ${selectedDirectory}</h1>
+        </body>
+      </html>
+    `;
+    writeFileSync(outputFilePath, htmlContent);
+    console.log(`Map generated: ${outputFilePath}`);
+    return;
+  }
 
   const nodes: Node[] = files.map(file => ({
     id: file,
@@ -203,6 +224,28 @@ export function generateHtml(files: string[], dependencies: Map<string, string[]
     </html>
   `;
 
-  writeFileSync(outputFilePath, htmlContent);
-  console.log(`Map generated: ${outputFilePath}`);
+  const progressBar = new cliProgress.SingleBar({
+    format: 'Generating HTML |' + '{bar}' + '| {percentage}%',
+    barCompleteChar: '\u2588',
+    barIncompleteChar: '\u2591',
+    hideCursor: true
+  });
+
+  progressBar.start(100, 0);
+
+  const duration = 4000;
+  const interval = 50;
+  let progress = 0;
+
+  const timer = setInterval(() => {
+    progress += (interval / duration) * 100;
+    progressBar.update(Math.min(progress, 100));
+
+    if (progress >= 100) {
+      clearInterval(timer);
+      progressBar.stop();
+      writeFileSync(outputFilePath, htmlContent);
+      console.log(`\nMap generated: ${outputFilePath}`);
+    }
+  }, interval);
 }
