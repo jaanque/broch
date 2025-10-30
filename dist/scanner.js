@@ -48,13 +48,36 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.scan = scan;
 const glob = __importStar(require("glob"));
 const ora_1 = __importDefault(require("ora"));
+const fs_1 = require("fs");
 const dependencies_1 = require("./dependencies");
 const html_1 = require("./html");
 const path_1 = __importDefault(require("path"));
+const inquirer_1 = __importDefault(require("inquirer"));
+const isDirectory = (source) => {
+    try {
+        return (0, fs_1.lstatSync)(source).isDirectory();
+    }
+    catch (e) {
+        return false;
+    }
+};
+const getDirectories = (source) => (0, fs_1.readdirSync)(source).map(name => path_1.default.join(source, name)).filter(isDirectory);
 function scan(directory, excludePatterns) {
     return __awaiter(this, void 0, void 0, function* () {
-        let selectedDirectory = directory || '.';
-        let exclusions = ['node_modules/**'];
+        let selectedDirectory = directory;
+        if (!selectedDirectory) {
+            const directories = getDirectories(process.cwd());
+            const answer = yield inquirer_1.default.prompt([
+                {
+                    type: 'list',
+                    name: 'selectedDirectory',
+                    message: 'Select a directory to map:',
+                    choices: ['.', ...directories],
+                },
+            ]);
+            selectedDirectory = answer.selectedDirectory;
+        }
+        let exclusions = ['node_modules/**', '.git/**'];
         if (excludePatterns) {
             exclusions.push(...excludePatterns.split(',').map((p) => p.trim()));
         }
