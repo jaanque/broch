@@ -3,9 +3,8 @@
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { scan } from './scanner';
-import { configMenu } from './config';
 import open from 'open';
-import conf from './config';
+import config from './config';
 
 yargs(hideBin(process.argv))
   .command('map [directory]', 'Genera el mapa del directorio', (yargs) => {
@@ -23,17 +22,15 @@ yargs(hideBin(process.argv))
   })
   .alias('m', 'map')
   .command('preview', 'Abre directamente el HTML generado en el navegador', () => {
-    const outputFileName = conf.get('outputFileName') as string;
-    open(outputFileName);
+    open(config.outputFileName);
   })
   .alias('p', 'preview')
-  .command('config', 'Menú de configuración interactivo', () => {
-    configMenu();
-  })
   .command('version', 'Muestra la versión del paquete', () => {
     console.log('broch version 1.0.0');
   })
   .alias('v', 'version')
   .help()
   .alias('h', 'help')
+  .epilogue('Para más información, visita nuestra documentación en https://github.com/your-repo/broch')
+  .describe('help', 'Muestra un resumen de los comandos. La configuración se puede personalizar editando el archivo broch.config.json')
   .argv;

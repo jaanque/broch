@@ -7,9 +7,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const yargs_1 = __importDefault(require("yargs"));
 const helpers_1 = require("yargs/helpers");
 const scanner_1 = require("./scanner");
-const config_1 = require("./config");
 const open_1 = __importDefault(require("open"));
-const config_2 = __importDefault(require("./config"));
+const config_1 = __importDefault(require("./config"));
 (0, yargs_1.default)((0, helpers_1.hideBin)(process.argv))
     .command('map [directory]', 'Genera el mapa del directorio', (yargs) => {
     return yargs.positional('directory', {
@@ -26,18 +25,16 @@ const config_2 = __importDefault(require("./config"));
 })
     .alias('m', 'map')
     .command('preview', 'Abre directamente el HTML generado en el navegador', () => {
-    const outputFileName = config_2.default.get('outputFileName');
-    (0, open_1.default)(outputFileName);
+    (0, open_1.default)(config_1.default.outputFileName);
 })
     .alias('p', 'preview')
-    .command('config', 'Menú de configuración interactivo', () => {
-    (0, config_1.configMenu)();
-})
     .command('version', 'Muestra la versión del paquete', () => {
     console.log('broch version 1.0.0');
 })
     .alias('v', 'version')
     .help()
     .alias('h', 'help')
+    .epilogue('Para más información, visita nuestra documentación en https://github.com/your-repo/broch')
+    .describe('help', 'Muestra un resumen de los comandos. La configuración se puede personalizar editando el archivo broch.config.json')
     .argv;
 //# sourceMappingURL=index.js.map

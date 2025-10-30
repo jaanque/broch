@@ -1,6 +1,6 @@
 import { writeFileSync, statSync } from 'fs';
 import path from 'path';
-import conf from './config';
+import config from './config';
 
 interface Node {
   id: string;
@@ -18,7 +18,7 @@ interface Edge {
 
 const getFileTypeColor = (filePath: string): string => {
   const extension = path.extname(filePath).substring(1);
-  const colors = conf.get('colors') as { [key: string]: string };
+  const colors = config.colors as { [key: string]: string };
 
   const extensionMap: { [key: string]: string } = {
     'ts': 'js',
@@ -53,7 +53,7 @@ const getFileMetadata = (filePath: string): string => {
 }
 
 export function generateHtml(files: string[], dependencies: Map<string, string[]>) {
-  const outputFileName = conf.get('outputFileName') as string;
+  const outputFileName = config.outputFileName;
 
   const nodes: Node[] = files.map(file => ({
     id: file,

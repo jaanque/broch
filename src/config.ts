@@ -1,77 +1,37 @@
-import Configstore from 'configstore';
-import inquirer from 'inquirer';
-import { readFileSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync } from 'fs';
+import path from 'path';
 
-const pkg = JSON.parse(readFileSync('./package.json', 'utf-8'));
-const conf = new Configstore(pkg.name, {
-  colors: {
-    html: 'orange',
-    css: 'green',
-    js: 'blue',
-    php: 'darkblue',
-    image: 'pink',
-    rust: 'gray',
-    other: 'lightgray',
-  },
+const CONFIG_FILE_NAME = 'broch.config.json';
+const configFilePath = path.resolve(process.cwd(), CONFIG_FILE_NAME);
+
+const defaultConfig = {
   outputFileName: 'brochMap.html',
-});
+  colors: {
+    html: '#E44D26', // Orange
+    css: '#1572B6',  // Blue
+    js: '#F7DF1E',   // Yellow
+    php: '#777BB4',  // Purple
+    image: '#4CAF50',// Green
+    rust: '#DE3423', // Rust Orange
+    other: '#CCCCCC',// Light Gray
+  },
+};
 
-async function editColors() {
-  const { fileType } = await inquirer.prompt([
-    {
-      type: 'list',
-      name: 'fileType',
-      message: 'Select a file type to change its color:',
-      choices: Object.keys(conf.get('colors') as object),
+let config = defaultConfig;
+
+if (existsSync(configFilePath)) {
+  const userConfig = JSON.parse(readFileSync(configFilePath, 'utf-8'));
+  // Deep merge user config with default config
+  config = {
+    ...defaultConfig,
+    ...userConfig,
+    colors: {
+      ...defaultConfig.colors,
+      ...(userConfig.colors || {}),
     },
-  ]);
-
-  const { color } = await inquirer.prompt([
-    {
-      type: 'input',
-      name: 'color',
-      message: `Enter the new color for ${fileType}:`,
-      default: conf.get(`colors.${fileType}`),
-    },
-  ]);
-
-  conf.set(`colors.${fileType}`, color);
-  console.log(`${fileType} color updated to ${color}`);
+  };
+} else {
+  writeFileSync(configFilePath, JSON.stringify(defaultConfig, null, 2));
 }
 
-async function editOutputFileName() {
-  const { outputFileName } = await inquirer.prompt([
-    {
-      type: 'input',
-      name: 'outputFileName',
-      message: 'Enter the new output file name:',
-      default: conf.get('outputFileName'),
-    },
-  ]);
-  conf.set('outputFileName', outputFileName);
-  console.log(`Output file name updated to ${outputFileName}`);
-}
-
-export async function configMenu() {
-  const { action } = await inquirer.prompt([
-    {
-      type: 'list',
-      name: 'action',
-      message: 'What do you want to configure?',
-      choices: ['Edit file colors', 'Edit output file name', 'Exit'],
-    },
-  ]);
-
-  switch (action) {
-    case 'Edit file colors':
-      await editColors();
-      break;
-    case 'Edit output file name':
-      await editOutputFileName();
-      break;
-    case 'Exit':
-      return;
-  }
-}
-
-export default conf;
+export default config;

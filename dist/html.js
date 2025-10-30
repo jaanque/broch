@@ -9,7 +9,7 @@ const path_1 = __importDefault(require("path"));
 const config_1 = __importDefault(require("./config"));
 const getFileTypeColor = (filePath) => {
     const extension = path_1.default.extname(filePath).substring(1);
-    const colors = config_1.default.get('colors');
+    const colors = config_1.default.colors;
     const extensionMap = {
         'ts': 'js',
         'tsx': 'js',
@@ -40,7 +40,7 @@ const getFileMetadata = (filePath) => {
     }
 };
 function generateHtml(files, dependencies) {
-    const outputFileName = config_1.default.get('outputFileName');
+    const outputFileName = config_1.default.outputFileName;
     const nodes = files.map(file => ({
         id: file,
         label: path_1.default.basename(file),

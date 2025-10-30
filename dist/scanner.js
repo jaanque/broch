@@ -46,66 +46,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.scan = scan;
-const inquirer_1 = __importDefault(require("inquirer"));
 const glob = __importStar(require("glob"));
 const ora_1 = __importDefault(require("ora"));
-const fs_1 = require("fs");
 const dependencies_1 = require("./dependencies");
 const html_1 = require("./html");
 const path_1 = __importDefault(require("path"));
-const isDirectory = (source) => {
-    try {
-        return (0, fs_1.lstatSync)(source).isDirectory();
-    }
-    catch (e) {
-        return false;
-    }
-};
-const getDirectories = (source) => (0, fs_1.readdirSync)(source).map(name => path_1.default.join(source, name)).filter(isDirectory);
 function scan(directory, excludePatterns) {
     return __awaiter(this, void 0, void 0, function* () {
-        let selectedDirectory = directory;
-        if (!selectedDirectory) {
-            const directories = getDirectories(process.cwd());
-            const answer = yield inquirer_1.default.prompt([
-                {
-                    type: 'list',
-                    name: 'selectedDirectory',
-                    message: 'Select a directory to map:',
-                    choices: ['.', ...directories],
-                },
-            ]);
-            selectedDirectory = answer.selectedDirectory;
-        }
+        let selectedDirectory = directory || '.';
         let exclusions = ['node_modules/**'];
-        if (excludePatterns !== undefined) {
+        if (excludePatterns) {
             exclusions.push(...excludePatterns.split(',').map((p) => p.trim()));
-        }
-        else {
-            const { exclude } = yield inquirer_1.default.prompt([
-                {
-                    type: 'confirm',
-                    name: 'exclude',
-                    message: 'Do you want to exclude any files or folders?',
-                    default: false,
-                },
-            ]);
-            if (exclude) {
-                const { patterns } = yield inquirer_1.default.prompt([
-                    {
-                        type: 'input',
-                        name: 'patterns',
-                        message: 'Enter glob patterns to exclude (comma-separated):',
-                    },
-                ]);
-                exclusions.push(...patterns.split(',').map((p) => p.trim()));
-            }
         }
         const spinner = (0, ora_1.default)(`Scanning files in ${selectedDirectory}...`).start();
         try {
             const searchPath = selectedDirectory || '.';
             const files = glob.sync(`${searchPath}/**/*`, { ignore: exclusions, dot: true, nodir: true });
-            // Convert all file paths to absolute paths for consistent dependency resolution
             const absoluteFiles = files.map(file => path_1.default.resolve(file));
             const filesSet = new Set(absoluteFiles);
             spinner.succeed(`Found ${absoluteFiles.length} files.`);
