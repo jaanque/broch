@@ -1,10 +1,11 @@
 import * as glob from 'glob';
 import { lstatSync, readdirSync } from 'fs';
 import { detectDependencies } from './dependencies';
-import cliProgress from 'cli-progress';
 import { generateHtml } from './html';
 import path from 'path';
 import inquirer from 'inquirer';
+import chalk from 'chalk';
+import ora from 'ora';
 
 const isDirectory = (source: string) => {
     try {
@@ -24,11 +25,16 @@ export async function scan(directory?: string, excludePatterns?: string) {
             {
                 type: 'list',
                 name: 'selectedDirectory',
-                message: 'Select a directory to map:',
+                message: chalk.bold('Selecciona el directorio a escanear:'),
                 choices: ['.', ...directories],
             },
         ]);
         selectedDirectory = answer.selectedDirectory;
+    }
+
+    if (!selectedDirectory) {
+        console.log(chalk.yellow('No se ha seleccionado ningún directorio.'));
+        return;
     }
 
     let exclusions: string[] = ['node_modules/**', '.git/**'];
@@ -36,17 +42,7 @@ export async function scan(directory?: string, excludePatterns?: string) {
         exclusions.push(...excludePatterns.split(',').map((p: string) => p.trim()));
     }
 
-    const progressBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
-    progressBar.start(100, 0);
-
-    const duration = 4000;
-    const interval = 50;
-    let progress = 0;
-
-    const timer = setInterval(() => {
-        progress += (interval / duration) * 100;
-        progressBar.update(Math.min(progress, 100));
-    }, interval);
+    const spinner = ora('Escaneando archivos...').start();
 
     try {
         const searchPath = selectedDirectory || '.';
@@ -62,14 +58,15 @@ export async function scan(directory?: string, excludePatterns?: string) {
             }
         }
 
-        setTimeout(() => {
-            clearInterval(timer);
-            progressBar.stop();
-            generateHtml(absoluteFiles, dependencies, selectedDirectory);
-        }, duration);
+        generateHtml(absoluteFiles, dependencies, selectedDirectory);
+        spinner.succeed(chalk.green('Mapa generado exitosamente.'));
+
     } catch (error) {
-        clearInterval(timer);
-        progressBar.stop();
-        console.error('Failed to scan files.', error);
+        spinner.fail(chalk.red('Ha ocurrido un error durante el escaneo.'));
+        if (error instanceof Error) {
+            console.error(chalk.red(error.message));
+        } else {
+            console.error(chalk.red('Un error desconocido ha ocurrido.'));
+        }
     }
 }

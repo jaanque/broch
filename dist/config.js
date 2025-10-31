@@ -16,6 +16,11 @@ const defaultConfig = {
         php: '#777BB4', // Purple
         image: '#4CAF50', // Green
         rust: '#DE3423', // Rust Orange
+        json: '#000000', // Black
+        yml: '#cb171e', // Red
+        md: '#000000', // Black
+        py: '#3776AB', // Blue
+        java: '#b07219', // Brown
         other: '#CCCCCC', // Light Gray
     },
 };

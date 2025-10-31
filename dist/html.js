@@ -39,8 +39,27 @@ const getFileMetadata = (filePath) => {
         return filePath;
     }
 };
-function generateHtml(files, dependencies) {
-    const outputFileName = config_1.default.outputFileName;
+function generateHtml(files, dependencies, selectedDirectory) {
+    const outputFilePath = path_1.default.join(selectedDirectory, config_1.default.outputFileName);
+    if (files.length === 0) {
+        const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Broch Map</title>
+          <style>
+            body { display: flex; justify-content: center; align-items: center; height: 100vh; font-family: sans-serif; }
+          </style>
+        </head>
+        <body>
+          <h1>No nodes found in ${selectedDirectory}</h1>
+        </body>
+      </html>
+    `;
+        (0, fs_1.writeFileSync)(outputFilePath, htmlContent);
+        console.log(`Map generated: ${outputFilePath}`);
+        return;
+    }
     const nodes = files.map(file => ({
         id: file,
         label: path_1.default.basename(file),
@@ -56,6 +75,23 @@ function generateHtml(files, dependencies) {
             }
         }
     }
+    const legendHtml = Object.entries(config_1.default.colors).map(([key, color]) => {
+        const hex = color.replace('#', '');
+        const r = parseInt(hex.substring(0, 2), 16);
+        const g = parseInt(hex.substring(2, 4), 16);
+        const b = parseInt(hex.substring(4, 6), 16);
+        const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+        const textColor = (yiq >= 128) ? 'black' : 'white';
+        const capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
+        const label = {
+            js: 'JS/TS',
+            yml: 'YML',
+            md: 'Markdown',
+            py: 'Python',
+            java: 'Java'
+        }[key] || capitalizedKey;
+        return `<div style="background-color: ${color}; color: ${textColor}; padding: 3px 6px; margin-bottom: 3px; border-radius: 4px; font-size: 12px;">${label}</div>`;
+    }).join('');
     const htmlContent = `
     <!DOCTYPE html>
     <html>
@@ -96,13 +132,7 @@ function generateHtml(files, dependencies) {
         <div id="network"></div>
         <div id="legend">
           <h3>Color Legend</h3>
-          <div style="background-color: orange; color: white;">HTML</div>
-          <div style="background-color: green; color: white;">CSS</div>
-          <div style="background-color: blue; color: white;">JS/TS</div>
-          <div style="background-color: darkblue; color: white;">PHP</div>
-          <div style="background-color: pink;">Images</div>
-          <div style="background-color: gray; color: white;">Rust/Go</div>
-          <div style="background-color: lightgray;">Other</div>
+          ${legendHtml}
         </div>
         <button id="toggle-legend">Toggle Legend</button>
         <script type="text/javascript">
@@ -172,7 +202,7 @@ function generateHtml(files, dependencies) {
       </body>
     </html>
   `;
-    (0, fs_1.writeFileSync)(outputFileName, htmlContent);
-    console.log(`Map generated: ${outputFileName}`);
+    (0, fs_1.writeFileSync)(outputFilePath, htmlContent);
+    console.log(`Map generated: ${outputFilePath}`);
 }
 //# sourceMappingURL=html.js.map

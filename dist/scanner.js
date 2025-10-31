@@ -47,12 +47,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.scan = scan;
 const glob = __importStar(require("glob"));
-const ora_1 = __importDefault(require("ora"));
 const fs_1 = require("fs");
 const dependencies_1 = require("./dependencies");
 const html_1 = require("./html");
 const path_1 = __importDefault(require("path"));
 const inquirer_1 = __importDefault(require("inquirer"));
+const chalk_1 = __importDefault(require("chalk"));
+const ora_1 = __importDefault(require("ora"));
 const isDirectory = (source) => {
     try {
         return (0, fs_1.lstatSync)(source).isDirectory();
@@ -71,23 +72,26 @@ function scan(directory, excludePatterns) {
                 {
                     type: 'list',
                     name: 'selectedDirectory',
-                    message: 'Select a directory to map:',
+                    message: chalk_1.default.bold('Selecciona el directorio a escanear:'),
                     choices: ['.', ...directories],
                 },
             ]);
             selectedDirectory = answer.selectedDirectory;
         }
+        if (!selectedDirectory) {
+            console.log(chalk_1.default.yellow('No se ha seleccionado ningún directorio.'));
+            return;
+        }
         let exclusions = ['node_modules/**', '.git/**'];
         if (excludePatterns) {
             exclusions.push(...excludePatterns.split(',').map((p) => p.trim()));
         }
-        const spinner = (0, ora_1.default)(`Scanning files in ${selectedDirectory}...`).start();
+        const spinner = (0, ora_1.default)('Escaneando archivos...').start();
         try {
             const searchPath = selectedDirectory || '.';
             const files = glob.sync(`${searchPath}/**/*`, { ignore: exclusions, dot: true, nodir: true });
             const absoluteFiles = files.map(file => path_1.default.resolve(file));
             const filesSet = new Set(absoluteFiles);
-            spinner.succeed(`Found ${absoluteFiles.length} files.`);
             const dependencies = new Map();
             for (const file of absoluteFiles) {
                 const deps = (0, dependencies_1.detectDependencies)(file, filesSet);
@@ -95,11 +99,17 @@ function scan(directory, excludePatterns) {
                     dependencies.set(file, deps);
                 }
             }
-            (0, html_1.generateHtml)(absoluteFiles, dependencies);
+            (0, html_1.generateHtml)(absoluteFiles, dependencies, selectedDirectory);
+            spinner.succeed(chalk_1.default.green('Mapa generado exitosamente.'));
         }
         catch (error) {
-            spinner.fail('Failed to scan files.');
-            console.error(error);
+            spinner.fail(chalk_1.default.red('Ha ocurrido un error durante el escaneo.'));
+            if (error instanceof Error) {
+                console.error(chalk_1.default.red(error.message));
+            }
+            else {
+                console.error(chalk_1.default.red('Un error desconocido ha ocurrido.'));
+            }
         }
     });
 }
