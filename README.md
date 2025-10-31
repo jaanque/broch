@@ -1,9 +1,8 @@
+<div align="center">
+
 <p align="center"> <img src="assets/logo.png" alt="Broch Logo" width="200"> </p>
 
 <h1 align="center">Broch</h1>
-
-<p align="center"> <strong>Visualiza la arquitectura de tu proyecto de forma sencilla e interactiva.</strong> </p>
-
 
 <p align="center">
   <img src="https://img.shields.io/github/last-commit/jaanque/broch/main" alt="GitHub last commit (branch)">
@@ -13,59 +12,78 @@
   <img src="https://img.shields.io/npm/d18m/broch" alt="NPM Downloads">
 </p>
 
+<p align="center">
+  <a href="README.md">English</a> |
+  <a href="README.es.md">Español</a> |
+  <a href="README.zh.md">中文</a> |
+  <a href="README.ja.md">日本語</a>
+</p>
 
-Broch es una herramienta de línea de comandos (CLI) diseñada para analizar la estructura de tus proyectos y generar un mapa de dependencias interactivo. Con Broch, puedes obtener una visión clara y gráfica de cómo están interconectados tus archivos, facilitando la comprensión, el mantenimiento y la depuración de tu código.
+<p align="center"> <strong>Visualize your project's architecture in a simple and interactive way.</strong> </p>
 
-## ✨ Características Principales
-Análisis Automático de Dependencias: Detecta las relaciones import, require, include y más en archivos JavaScript, TypeScript, HTML, CSS y PHP.
+## 📑 Table of Contents
+- [Main Features](#-main-features)
+- [Installation](#-installation)
+- [Commands](#️-commands)
+  - [map](#map)
+  - [preview](#preview)
+  - [version](#version)
+  - [help](#help)
+- [Configuration](#-configuration)
+- [License](#-license)
 
-Visualización Interactiva: Genera un mapa HTML dinámico utilizando vis-network que te permite explorar las conexiones de tu proyecto de forma intuitiva.
+Broch is a command-line interface (CLI) tool designed to analyze your projects' structure and generate an interactive dependency map. With Broch, you can get a clear and graphical view of how your files are interconnected, making it easier to understand, maintain, and debug your code.
 
-Alta Personalización: Configura los colores, las etiquetas y el nombre del archivo de salida a través de un simple **archivo broch.config.json**.
+## ✨ Main Features
+Automatic Dependency Analysis: Detects import, require, include, and more relationships in JavaScript, TypeScript, HTML, CSS, and PHP files.
 
-Fácil de Usar: Con solo un par de comandos, puedes tener una visión completa de la arquitectura de tu proyecto.
+Interactive Visualization: Generates a dynamic HTML map using vis-network that allows you to explore your project's connections intuitively.
 
-## 🚀 Instalación
-Para empezar a usar Broch, asegúrate de tener Node.js (versión 12 o superior) instalado en tu sistema. Luego, instala el paquete globalmente a través de npm:
+High Customization: Configure colors, labels, and output filename through a simple **broch.config.json** file.
+
+Easy to Use: With just a couple of commands, you can have a complete view of your project's architecture.
+
+## 🚀 Installation
+To start using Broch, make sure you have Node.js (version 12 or higher) installed on your system. Then, install the package globally through npm:
 
 ```bash
 npm i -g broch
 ```
 
-Al instalarlo de forma global, podrás ejecutar el comando broch desde cualquier directorio.
+By installing it globally, you'll be able to run the broch command from any directory.
 
-## ⚙️ Comandos
-Broch es muy sencillo de utilizar. A continuación, se detallan los comandos disponibles.
+## ⚙️ Commands
+Broch is very simple to use. Here are the available commands.
 
 ```bash
 broch map
 ```
-Este es el corazón de Broch. Escanea un directorio (a escoger) y genera el mapa de dependencias.
+This is the heart of Broch. It scans a directory (of your choice) and generates the dependency map.
 
 Alias:
 ```bash
 broch m
 ```
 
-**Ejemplos de Uso:**
+**Usage Examples:**
 
-Escanear el directorio seleccionado: Simplemente ejecuta el comando en la raíz de tu proyecto y broch te dara una lista de los directorios actuales, selecciona el que quieras y listo.
+Scan selected directory: Simply run the command in your project's root, and broch will give you a list of current directories, select the one you want, and you're done.
 
 ##
 
 ```bash
 broch preview
 ```
-Una vez que hayas generado el mapa, este comando te permitirá abrirlo directamente en tu navegador.
+Once you've generated the map, this command will allow you to open it directly in your browser.
 
 Alias:
 ```bash
 broch p
 ```
 
-Ejemplo de Uso:
+Usage Example:
 
-Este comando buscará el archivo brochMap.html (o el nombre que hayas configurado) y lo abrirá.
+This command will look for the brochMap.html file (or the name you've configured) and open it.
 
 ##
 
@@ -73,7 +91,7 @@ Este comando buscará el archivo brochMap.html (o el nombre que hayas configurad
 broch version
 ```
 
-Muestra la versión de Broch que tienes instalada.
+Shows the version of Broch you have installed.
 
 Alias:
 
@@ -89,21 +107,23 @@ broch
 ```bash
 broch help
 ```
-Muestra un resumen de los comandos y opciones disponibles.
+Shows a summary of available commands and options.
 
 Alias:
 ```bash
 broch h
 ```
 
-## 🔧 Configuración (broch.config.json)
-La primera vez que ejecutes Broch, se creará automáticamente un archivo broch.config.json en tu directorio. Este archivo te permite personalizar la herramienta según tus preferencias.
+## 🔧 Configuration (broch.config.json)
+The first time you run Broch, a broch.config.json file will be automatically created in your directory. This file allows you to customize the tool according to your preferences.
 
-**outputFileName:** Define el nombre del archivo HTML que se generará.
+**outputFileName:** Define the name of the HTML file that will be generated.
 
-**colors:** Asigna un color a cada tipo de archivo según su extensión. ¡Siéntete libre de añadir o modificar los que quieras!
+**colors:** Assign a color to each file type according to its extension. Feel free to add or modify as many as you want!
 
-**labels:** Permite definir etiquetas personalizadas para la leyenda de colores en el mapa, haciendo la visualización aún más clara.
+**labels:** Allows you to define custom labels for the color legend in the map, making visualization even clearer.
 
-## 📄 Licencia
-Este proyecto está bajo la Licencia ISC. Consulta el archivo LICENSE para más detalles.
+## 📄 License
+This project is under the **CC BY-NC-ND 4.0** License. See [this url](https://creativecommons.org/licenses/by-nc-nd/4.0/) for more details.
+
+</div>
