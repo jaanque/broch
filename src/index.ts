@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { buildCli } from './cli';
-import terminalImage from 'terminal-image';
+import asciify from 'asciify-image';
 import path from 'path';
 
 const MIN_NODE_VERSION = 12;
@@ -9,8 +9,13 @@ const MIN_NODE_VERSION = 12;
 async function showLogo() {
   const logoPath = path.join(__dirname, '..', 'assets', 'logo.png');
   try {
-    const image = await terminalImage.file(logoPath, { width: 40 });
-    console.log(image);
+    const asciiArt = await new Promise((resolve, reject) => {
+      asciify(logoPath, { fit: 'box', width: 40 }, (err, asciified) => {
+        if (err) return reject(err);
+        resolve(asciified);
+      });
+    });
+    console.log(asciiArt);
   } catch (error) {
     // No hacer nada si hay un error
   }

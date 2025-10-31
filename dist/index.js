@@ -14,15 +14,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const cli_1 = require("./cli");
-const terminal_image_1 = __importDefault(require("terminal-image"));
+const asciify_image_1 = __importDefault(require("asciify-image"));
 const path_1 = __importDefault(require("path"));
 const MIN_NODE_VERSION = 12;
 function showLogo() {
     return __awaiter(this, void 0, void 0, function* () {
         const logoPath = path_1.default.join(__dirname, '..', 'assets', 'logo.png');
         try {
-            const image = yield terminal_image_1.default.file(logoPath, { width: 40 });
-            console.log(image);
+            const asciiArt = yield new Promise((resolve, reject) => {
+                (0, asciify_image_1.default)(logoPath, { fit: 'box', width: 40 }, (err, asciified) => {
+                    if (err)
+                        return reject(err);
+                    resolve(asciified);
+                });
+            });
+            console.log(asciiArt);
         }
         catch (error) {
             // No hacer nada si hay un error
