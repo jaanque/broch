@@ -14,12 +14,12 @@ async function showLogo(): Promise<void> {
   const logoPath = path.join(__dirname, '..', 'assets', 'logo.png');
   try {
     const asciiArt = await new Promise<string>((resolve, reject) => {
-      asciify(logoPath, { fit: 'box', width: 20, color: false }, (err, asciified) => {
+      asciify(logoPath, { fit: 'box', width: 15, color: false }, (err, asciified) => {
         if (err) return reject(err);
         resolve(asciified as string);
       });
     });
-    console.log(chalk.yellow(asciiArt));
+    console.log(chalk.white(asciiArt));
   } catch (error) {
     console.error(chalk.red('Error al mostrar el logo:'), error);
   }
