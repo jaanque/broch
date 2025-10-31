@@ -101,12 +101,6 @@ function scan(directory, excludePatterns) {
                 console.log(chalk_1.default.yellow('No se ha seleccionado ningún directorio.'));
                 return;
             }
-            // Sanitize directory input
-            const resolvedPath = path_1.default.resolve(selectedDirectory);
-            const cwd = process.cwd();
-            if (!resolvedPath.startsWith(cwd)) {
-                throw new Error('Directory traversal is not allowed.');
-            }
             spinner.start('Escaneando archivos...');
             const exclusions = ['node_modules/**', '.git/**'];
             if (excludePatterns) {
