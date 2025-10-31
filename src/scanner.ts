@@ -57,6 +57,14 @@ export async function scan(directory?: string, excludePatterns?: string): Promis
             return;
         }
 
+        // Sanitize directory input
+        const resolvedPath = path.resolve(selectedDirectory);
+        const cwd = process.cwd();
+
+        if (!resolvedPath.startsWith(cwd)) {
+            throw new Error('Directory traversal is not allowed.');
+        }
+
         spinner.start('Escaneando archivos...');
 
         const exclusions: string[] = ['node_modules/**', '.git/**'];
