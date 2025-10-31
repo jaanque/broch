@@ -3,31 +3,39 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.commands = void 0;
 exports.setupCommands = setupCommands;
 const scanner_1 = require("./scanner");
 const open_1 = __importDefault(require("open"));
 const config_1 = __importDefault(require("./config"));
 const chalk_1 = __importDefault(require("chalk"));
-function setupCommands(yargs) {
-    return yargs
-        .command(['map', 'm'], 'Genera el mapa del directorio', (yargs) => {
-        return yargs.positional('directory', {
+// Estructura de datos con la definición de todos los comandos
+exports.commands = [
+    {
+        name: ['map', 'm'],
+        description: 'Genera el mapa del directorio',
+        builder: (yargs) => yargs.positional('directory', {
             describe: 'El directorio a mapear',
             type: 'string',
-        });
-    }, (argv) => {
-        (0, scanner_1.scan)(argv.directory, argv.exclude);
-    })
-        .option('exclude', {
-        alias: 'e',
-        describe: 'Patrones glob a excluir (separados por comas)',
-        type: 'string',
-    })
-        .command(['preview', 'p'], 'Abre directamente el HTML generado en el navegador', () => {
-        (0, open_1.default)(config_1.default.outputFileName);
-    })
-        .command(['version', 'v'], 'Muestra la versión del paquete', () => {
-        console.log(`broch version ${chalk_1.default.green('1.0.0')}`);
+        }),
+        handler: (argv) => (0, scanner_1.scan)(argv.directory, argv.exclude),
+    },
+    {
+        name: ['preview', 'p'],
+        description: 'Abre el HTML generado en el navegador',
+        handler: () => (0, open_1.default)(config_1.default.outputFileName),
+    },
+    {
+        name: ['version', 'v'],
+        description: 'Muestra la versión del paquete',
+        handler: () => console.log(`broch version ${chalk_1.default.green('1.0.0')}`),
+    },
+];
+// Función que configura los comandos en yargs
+function setupCommands(yargs) {
+    exports.commands.forEach(cmd => {
+        yargs.command(cmd.name, cmd.description, cmd.builder || {}, cmd.handler);
     });
+    return yargs;
 }
 //# sourceMappingURL=commands.js.map

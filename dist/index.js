@@ -14,14 +14,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const cli_1 = require("./cli");
+const commands_1 = require("./commands");
 const asciify_image_1 = __importDefault(require("asciify-image"));
 const path_1 = __importDefault(require("path"));
 const chalk_1 = __importDefault(require("chalk"));
+const boxen_1 = __importDefault(require("boxen"));
 const MIN_NODE_VERSION = 12;
 /**
- * Muestra el logo de la aplicación como arte ASCII.
+ * Muestra el logo y la ayuda personalizada.
  */
-function showLogo() {
+function showHelpAndLogo() {
     return __awaiter(this, void 0, void 0, function* () {
         const logoPath = path_1.default.join(__dirname, '..', 'assets', 'logo.png');
         try {
@@ -29,34 +31,41 @@ function showLogo() {
                 (0, asciify_image_1.default)(logoPath, { fit: 'box', width: 12, color: false }, (err, asciified) => {
                     if (err)
                         return reject(err);
-                    // Procesa el arte ASCII para dejar solo la silueta.
-                    const silhouette = asciified
-                        .split('\n')
-                        .map(line => line.replace(/;/g, ' ').trimEnd())
-                        .join('\n')
-                        .trim(); // Elimina líneas vacías al principio y al final.
+                    const silhouette = asciified.split('\n').slice(1).map(line => line.replace(/;/g, ' ').trimEnd()).join('\n').trim();
                     resolve(silhouette);
                 });
             });
-            console.log(chalk_1.default.white(asciiArt));
+            const usage = `${chalk_1.default.bold('Uso:')}\n${chalk_1.default.cyan('broch <comando>')} ${chalk_1.default.gray('[opciones]')}`;
+            const cmdList = commands_1.commands.map(cmd => `  ${chalk_1.default.cyan(cmd.name[0].padEnd(10))} ${chalk_1.default.gray(`(alias: ${cmd.name.slice(1).join(', ')})`)} - ${cmd.description}`).join('\n');
+            const cmdSection = `${chalk_1.default.bold('Comandos:')}\n${cmdList}`;
+            const optionsList = [
+                `  ${chalk_1.default.cyan('--help, -h'.padEnd(10))} - Muestra esta ayuda`,
+                `  ${chalk_1.default.cyan('--version, -v'.padEnd(10))} - Muestra la versión`,
+                `  ${chalk_1.default.cyan('--exclude, -e'.padEnd(10))} - Excluye patrones`
+            ].join('\n');
+            const optionsSection = `${chalk_1.default.bold('Opciones:')}\n${optionsList}`;
+            const epilogue = chalk_1.default.gray('Para más información, visita la documentación oficial.');
+            console.log((0, boxen_1.default)(`${chalk_1.default.white(asciiArt)}\n\n${usage}\n\n${cmdSection}\n\n${optionsSection}\n\n${epilogue}`, {
+                padding: 1, margin: 1, borderStyle: 'round', borderColor: 'cyan', title: chalk_1.default.bold('broch CLI'), titleAlignment: 'center',
+            }));
         }
         catch (error) {
-            console.error(chalk_1.default.red('Error al mostrar el logo:'), error);
+            console.error(chalk_1.default.red('Error al mostrar la ayuda:'), error);
         }
     });
 }
 /**
- * Verifica que la versión de Node.js sea compatible.
+ * Verifica la versión de Node.js.
  */
 function checkNodeVersion() {
     const majorVersion = parseInt(process.versions.node.split('.')[0], 10);
     if (majorVersion < MIN_NODE_VERSION) {
-        console.error(chalk_1.default.red(`Error: Se requiere Node.js v${MIN_NODE_VERSION} o superior. Versión actual: ${process.versions.node}`));
+        console.error(chalk_1.default.red(`Error: Se requiere Node.js v${MIN_NODE_VERSION} o superior.`));
         process.exit(1);
     }
 }
 /**
- * Función principal que inicializa el CLI.
+ * Función principal.
  */
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -64,10 +73,8 @@ function main() {
             checkNodeVersion();
             const cli = (0, cli_1.buildCli)();
             const argv = yield cli.argv;
-            // Mostrar ayuda si no se proporcionan comandos o si se solicita explícitamente.
             if (!argv._[0] || argv.help) {
-                yield showLogo();
-                cli.showHelp();
+                yield showHelpAndLogo();
             }
         }
         catch (error) {
