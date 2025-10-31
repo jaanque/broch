@@ -12,7 +12,7 @@ const chalk_1 = __importDefault(require("chalk"));
 // Estructura de datos con la definición de todos los comandos
 exports.commands = [
     {
-        name: ['map', 'm'],
+        name: ['map [directory]', 'm [directory]'],
         description: 'Genera el mapa del directorio',
         builder: (yargs) => yargs.positional('directory', {
             describe: 'El directorio a mapear',

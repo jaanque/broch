@@ -53,7 +53,7 @@ const html_1 = require("./html");
 const path_1 = __importDefault(require("path"));
 const inquirer_1 = __importDefault(require("inquirer"));
 const chalk_1 = __importDefault(require("chalk"));
-const ora_1 = __importDefault(require("ora"));
+const cli_progress_1 = __importDefault(require("cli-progress"));
 /**
  * Comprueba si una ruta es un directorio.
  */
@@ -91,7 +91,6 @@ function selectDirectory() {
  */
 function scan(directory, excludePatterns) {
     return __awaiter(this, void 0, void 0, function* () {
-        const spinner = (0, ora_1.default)();
         try {
             let selectedDirectory = directory;
             if (!selectedDirectory) {
@@ -101,7 +100,21 @@ function scan(directory, excludePatterns) {
                 console.log(chalk_1.default.yellow('No se ha seleccionado ningún directorio.'));
                 return;
             }
-            spinner.start('Escaneando archivos...');
+            const progressBar = new cli_progress_1.default.SingleBar({}, cli_progress_1.default.Presets.shades_classic);
+            progressBar.start(100, 0);
+            yield new Promise(resolve => {
+                let value = 0;
+                const interval = setInterval(() => {
+                    value += 1;
+                    progressBar.update(value);
+                    if (value >= 100) {
+                        clearInterval(interval);
+                        progressBar.stop();
+                        resolve(null);
+                    }
+                }, 40);
+            });
+            console.log(chalk_1.default.cyan('Escaneando archivos...'));
             const exclusions = ['node_modules/**', '.git/**'];
             if (excludePatterns) {
                 exclusions.push(...excludePatterns.split(',').map((p) => p.trim()));
@@ -111,18 +124,18 @@ function scan(directory, excludePatterns) {
             const filesSet = new Set(absoluteFiles);
             const dependencies = new Map();
             for (const file of absoluteFiles) {
-                spinner.text = `Analizando: ${chalk_1.default.cyan(file)}`;
+                console.log(chalk_1.default.cyan(`Analizando: ${file}`));
                 const deps = (0, dependencies_1.detectDependencies)(file, filesSet);
                 if (deps.length > 0) {
                     dependencies.set(file, deps);
                 }
             }
-            spinner.text = 'Generando mapa HTML...';
+            console.log(chalk_1.default.cyan('Generando mapa HTML...'));
             (0, html_1.generateHtml)(absoluteFiles, dependencies, selectedDirectory);
-            spinner.succeed(chalk_1.default.green('Mapa generado exitosamente.'));
+            console.log(chalk_1.default.green('Mapa generado exitosamente.'));
         }
         catch (error) {
-            spinner.fail(chalk_1.default.red('Ha ocurrido un error durante el escaneo.'));
+            console.error(chalk_1.default.red('Ha ocurrido un error durante el escaneo.'));
             if (error instanceof Error) {
                 console.error(chalk_1.default.red(error.message));
             }

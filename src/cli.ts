@@ -9,7 +9,7 @@ export function buildCli() {
     .usage(`${chalk.bold('Uso:')} $0 <comando> [opciones]`)
     .help('h')
     .alias('h', 'help')
-    .epilogue(`Para más información, visita nuestra documentación en ${chalk.underline('https://github.com/your-repo/broch')}`)
+    .epilogue(`Nota: Al ejecutar broch por primera vez, se creará el archivo "broch.config.json" para la configuración del paquete.\nPara más información, visita nuestra documentación en ${chalk.underline('https://github.com/your-repo/broch')}`)
     .strict()
     .demandCommand(0)
     .strictCommands() // Activa el manejo estricto de comandos
