@@ -1,147 +1,101 @@
+<p align="center"> <img src="assets/logo.png" alt="Broch Logo" width="200"> </p>
+
 <h1 align="center">Broch</h1>
 
-<p align="center">
-  Una herramienta CLI para visualizar las dependencias de tu proyecto y generar un mapa interactivo.
-</p>
+<p align="center"> <strong>Visualiza la arquitectura de tu proyecto de forma sencilla e interactiva.</strong> </p>
 
----
+<p align="center"> <a href=""> <img src="" alt="NPM Version"> </a> <a href=""> <img src="" alt="License"> </a> </p>
 
-## 📜 Índice
+Broch es una herramienta de línea de comandos (CLI) diseñada para analizar la estructura de tus proyectos y generar un mapa de dependencias interactivo. Con Broch, puedes obtener una visión clara y gráfica de cómo están interconectados tus archivos, facilitando la comprensión, el mantenimiento y la depuración de tu código.
 
-1.  [Instalación](#instalación)
-2.  [Uso Básico](#uso-básico)
-3.  [Comandos](#comandos)
-    -   [`map`](#comando-map)
-    -   [`preview`](#comando-preview)
-    -   [`version`](#comando-version)
-4.  [Configuración](#configuración)
-5.  [Licencia](#licencia)
+## ✨ Características Principales
+Análisis Automático de Dependencias: Detecta las relaciones import, require, include y más en archivos JavaScript, TypeScript, HTML, CSS y PHP.
 
----
+Visualización Interactiva: Genera un mapa HTML dinámico utilizando vis-network que te permite explorar las conexiones de tu proyecto de forma intuitiva.
+
+Alta Personalización: Configura los colores, las etiquetas y el nombre del archivo de salida a través de un simple **archivo broch.config.json**.
+
+Fácil de Usar: Con solo un par de comandos, puedes tener una visión completa de la arquitectura de tu proyecto.
 
 ## 🚀 Instalación
-
-Para utilizar Broch, instálalo globalmente a través de npm. Esto te permitirá ejecutar el comando `broch` desde cualquier directorio en tu sistema.
+Para empezar a usar Broch, asegúrate de tener Node.js (versión 12 o superior) instalado en tu sistema. Luego, instala el paquete globalmente a través de npm:
 
 ```bash
-npm install -g broch
+npm i -g broch
 ```
 
-Asegúrate de tener [Node.js](https://nodejs.org/) (versión 12 o superior) instalado en tu sistema.
+Al instalarlo de forma global, podrás ejecutar el comando broch desde cualquier directorio.
 
----
-
-## 💡 Uso Básico
-
-El comando principal de Broch es `map`, que escanea un directorio y genera un mapa de dependencias interactivo en formato HTML.
-
-Para escanear el directorio actual:
+## ⚙️ Comandos
+Broch es muy sencillo de utilizar. A continuación, se detallan los comandos disponibles.
 
 ```bash
 broch map
 ```
+Este es el corazón de Broch. Escanea un directorio (a escoger) y genera el mapa de dependencias.
 
-Si no especificas un directorio, Broch te pedirá que selecciones uno de la lista de directorios en tu ubicación actual.
-
-Para escanear un directorio específico:
-
+Alias:
 ```bash
-broch map ./ruta/al/directorio
+broch m
 ```
 
----
+**Ejemplos de Uso:**
 
-## ⚙️ Comandos
+Escanear el directorio seleccionado: Simplemente ejecuta el comando en la raíz de tu proyecto y broch te dara una lista de los directorios actuales, selecciona el que quieras y listo.
 
-A continuación se detallan todos los comandos disponibles en Broch.
-
-### Comando: `map`
-
-Genera el mapa de dependencias de un directorio.
-
--   **Alias:** `m`
--   **Argumento:** `[directory]` (opcional) - La ruta al directorio que deseas escanear. Si no se proporciona, se mostrará un menú interactivo.
-
-**Ejemplos:**
-
--   Escanear el directorio actual:
-    ```bash
-    broch map
-    ```
--   Escanear un subdirectorio llamado `src`:
-    ```bash
-    broch map src
-    ```
--   Excluir archivos o directorios específicos (patrones separados por comas):
-    ```bash
-    broch map . --exclude "dist/**,**/*.test.ts"
-    ```
-
-### Comando: `preview`
-
-Abre el archivo HTML generado en tu navegador web predeterminado.
-
--   **Alias:** `p`
-
-**Ejemplo:**
+##
 
 ```bash
 broch preview
 ```
+Una vez que hayas generado el mapa, este comando te permitirá abrirlo directamente en tu navegador.
 
-Este comando buscará el archivo `brochMap.html` en el directorio actual y lo abrirá.
+Alias:
+```bash
+broch p
+```
 
-### Comando: `version`
+Ejemplo de Uso:
 
-Muestra la versión de Broch que tienes instalada.
+Este comando buscará el archivo brochMap.html (o el nombre que hayas configurado) y lo abrirá.
 
--   **Alias:** `v`
-
-**Ejemplo:**
+##
 
 ```bash
 broch version
 ```
 
----
+Muestra la versión de Broch que tienes instalada.
 
-## 🔧 Configuración
+Alias:
 
-La primera vez que ejecutes Broch, se creará un archivo `broch.config.json` en tu directorio actual. Puedes personalizar este archivo para ajustar el comportamiento de Broch.
-
-```json
-{
-  "outputFileName": "brochMap.html",
-  "colors": {
-    "html": "#E44D26",
-    "css": "#1572B6",
-    "js": "#F7DF1E",
-    "php": "#777BB4",
-    "image": "#4CAF50",
-    "rust": "#DE3423",
-    "json": "#000000",
-    "yml": "#cb171e",
-    "md": "#000000",
-    "py": "#3776AB",
-    "java": "#b07219",
-    "other": "#CCCCCC"
-  },
-  "labels": {
-    "js": "JS/TS",
-    "yml": "YML",
-    "md": "Markdown",
-    "py": "Python",
-    "java": "Java"
-  }
-}
+```bash
+broch v
 ```
 
--   `outputFileName`: El nombre del archivo HTML que se generará.
--   `colors`: Un objeto que asigna colores a diferentes tipos de archivos por su extensión. Puedes añadir o modificar los colores aquí.
--   `labels`: Un objeto que te permite definir etiquetas personalizadas para las leyendas de colores en el mapa.
+##
 
----
+```bash
+broch
+```
+```bash
+broch help
+```
+Muestra un resumen de los comandos y opciones disponibles.
+
+Alias:
+```bash
+broch h
+```
+
+## 🔧 Configuración (broch.config.json)
+La primera vez que ejecutes Broch, se creará automáticamente un archivo broch.config.json en tu directorio. Este archivo te permite personalizar la herramienta según tus preferencias.
+
+**outputFileName:** Define el nombre del archivo HTML que se generará.
+
+**colors:** Asigna un color a cada tipo de archivo según su extensión. ¡Siéntete libre de añadir o modificar los que quieras!
+
+**labels:** Permite definir etiquetas personalizadas para la leyenda de colores en el mapa, haciendo la visualización aún más clara.
 
 ## 📄 Licencia
-
-Este proyecto está bajo la Licencia MIT. Consulta el archivo `LICENSE` para más detalles.
+Este proyecto está bajo la Licencia ISC. Consulta el archivo LICENSE para más detalles.
