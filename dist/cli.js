@@ -8,27 +8,18 @@ const yargs_1 = __importDefault(require("yargs"));
 const helpers_1 = require("yargs/helpers");
 const chalk_1 = __importDefault(require("chalk"));
 const commands_1 = require("./commands");
+const help_1 = require("./help");
 function buildCli() {
     const cli = (0, yargs_1.default)((0, helpers_1.hideBin)(process.argv))
         .scriptName('broch')
         .usage(`${chalk_1.default.bold('Uso:')} $0 <comando> [opciones]`)
-        .help('h')
-        .alias('h', 'help')
-        .epilogue(`Nota: Al ejecutar broch por primera vez, se creará el archivo "broch.config.json" para la configuración del paquete.\nPara más información, visita nuestra documentación en ${chalk_1.default.underline('https://github.com/your-repo/broch')}`)
+        .help(false) // Desactiva la ayuda por defecto
+        .version(false) // Desactiva la versión por defecto
         .strict()
-        .demandCommand(0)
+        .demandCommand(1, '') // Requiere al menos un comando
         .strictCommands() // Activa el manejo estricto de comandos
         .fail((msg, err) => {
-        // Personaliza el mensaje para comandos desconocidos
-        if (msg && msg.includes('Unknown command')) {
-            const args = (0, helpers_1.hideBin)(process.argv);
-            const command = args[0] || ''; // Obtiene el comando de los argumentos del proceso
-            console.error(chalk_1.default.red(`\nError: El comando "${command}" no es correcto.`));
-            console.info(chalk_1.default.cyan('Por favor, ejecuta "broch --help" para más información.\n'));
-        }
-        else {
-            console.error(chalk_1.default.red(`\nError: ${msg || 'Ha ocurrido un error.'}`));
-        }
+        (0, help_1.showHelp)();
         process.exit(1);
     });
     (0, commands_1.setupCommands)(cli);

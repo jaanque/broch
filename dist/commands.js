@@ -9,6 +9,7 @@ const scanner_1 = require("./scanner");
 const open_1 = __importDefault(require("open"));
 const config_1 = __importDefault(require("./config"));
 const chalk_1 = __importDefault(require("chalk"));
+const help_1 = require("./help");
 // Estructura de datos con la definición de todos los comandos
 exports.commands = [
     {
@@ -29,6 +30,11 @@ exports.commands = [
         name: ['version', 'v'],
         description: 'Muestra la versión del paquete',
         handler: () => console.log(`broch version ${chalk_1.default.green('1.0.0')}`),
+    },
+    {
+        name: ['help', 'h'],
+        description: 'Muestra la ayuda',
+        handler: () => (0, help_1.showHelp)(),
     },
 ];
 // Función que configura los comandos en yargs

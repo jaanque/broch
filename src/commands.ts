@@ -3,6 +3,7 @@ import { scan } from './scanner';
 import open from 'open';
 import config from './config';
 import chalk from 'chalk';
+import { showHelp } from './help';
 
 // Definición de la estructura para los comandos
 interface Command {
@@ -32,6 +33,11 @@ export const commands: Command[] = [
     name: ['version', 'v'],
     description: 'Muestra la versión del paquete',
     handler: () => console.log(`broch version ${chalk.green('1.0.0')}`),
+  },
+  {
+    name: ['help', 'h'],
+    description: 'Muestra la ayuda',
+    handler: () => showHelp(),
   },
 ];
 
