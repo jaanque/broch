@@ -1,115 +1,37 @@
 
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <title>Broch Map</title>
-        <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
-        <style type="text/css">
-          body { font-family: sans-serif; }
-          #network {
-            width: 100%;
-            height: 98vh;
-            border: 1px solid #e2e2e2;
-            background-color: #f7f7f7;
-          }
-          #legend {
-            display: none;
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            background-color: rgba(255, 255, 255, 0.9);
-            border: 1px solid #e2e2e2;
-            border-radius: 8px;
-            padding: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-          }
-           .vis-tooltip {
-            background-color: #fff !important;
-            border: 1px solid #ccc !important;
-            border-radius: 8px !important;
-            padding: 10px !important;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
-            font-family: sans-serif !important;
-            color: #333 !important;
-          }
-        </style>
-      </head>
-      <body>
-        <div id="network"></div>
-        <div id="legend">
-          <h3>Color Legend</h3>
-          <div style="background-color: orange; color: white;">HTML</div>
-          <div style="background-color: green; color: white;">CSS</div>
-          <div style="background-color: blue; color: white;">JS/TS</div>
-          <div style="background-color: darkblue; color: white;">PHP</div>
-          <div style="background-color: pink;">Images</div>
-          <div style="background-color: gray; color: white;">Rust/Go</div>
-          <div style="background-color: lightgray;">Other</div>
-        </div>
-        <button id="toggle-legend">Toggle Legend</button>
-        <script type="text/javascript">
-          const nodes = new vis.DataSet([{"id":"/app/src/scanner.ts","label":"scanner.ts","color":"#F7DF1E","title":"Path: /app/src/scanner.ts<br>Size: 2088 bytes<br>Modified: 10/30/2025","group":"/app/src"},{"id":"/app/src/index.ts","label":"index.ts","color":"#F7DF1E","title":"Path: /app/src/index.ts<br>Size: 1187 bytes<br>Modified: 10/30/2025","group":"/app/src"},{"id":"/app/src/index.js.map","label":"index.js.map","color":"#CCCCCC","title":"Path: /app/src/index.js.map<br>Size: 786 bytes<br>Modified: 10/30/2025","group":"/app/src"},{"id":"/app/src/index.js","label":"index.js","color":"#F7DF1E","title":"Path: /app/src/index.js<br>Size: 1008 bytes<br>Modified: 10/30/2025","group":"/app/src"},{"id":"/app/src/index.d.ts.map","label":"index.d.ts.map","color":"#CCCCCC","title":"Path: /app/src/index.d.ts.map<br>Size: 97 bytes<br>Modified: 10/30/2025","group":"/app/src"},{"id":"/app/src/index.d.ts","label":"index.d.ts","color":"#F7DF1E","title":"Path: /app/src/index.d.ts<br>Size: 66 bytes<br>Modified: 10/30/2025","group":"/app/src"},{"id":"/app/src/html.ts","label":"html.ts","color":"#F7DF1E","title":"Path: /app/src/html.ts<br>Size: 6003 bytes<br>Modified: 10/30/2025","group":"/app/src"},{"id":"/app/src/dependencies.ts","label":"dependencies.ts","color":"#F7DF1E","title":"Path: /app/src/dependencies.ts<br>Size: 2340 bytes<br>Modified: 10/30/2025","group":"/app/src"},{"id":"/app/src/config.ts","label":"config.ts","color":"#F7DF1E","title":"Path: /app/src/config.ts<br>Size: 946 bytes<br>Modified: 10/30/2025","group":"/app/src"}]);
-          const edges = new vis.DataSet([{"from":"/app/src/scanner.ts","to":"/app/src/dependencies.ts","arrows":"to"},{"from":"/app/src/scanner.ts","to":"/app/src/html.ts","arrows":"to"},{"from":"/app/src/index.ts","to":"/app/src/scanner.ts","arrows":"to"},{"from":"/app/src/index.ts","to":"/app/src/config.ts","arrows":"to"},{"from":"/app/src/html.ts","to":"/app/src/config.ts","arrows":"to"}]);
-          const container = document.getElementById('network');
-          const data = { nodes, edges };
-          const options = {
-            nodes: {
-              shape: 'box',
-              margin: 10,
-              font: {
-                size: 14,
-                color: '#333'
-              },
-              borderWidth: 1,
-              shadow: true
-            },
-            edges: {
-              width: 1,
-              color: {
-                color: '#848484',
-                highlight: '#333'
-              },
-              arrows: {
-                to: { enabled: true, scaleFactor: 0.5 }
-              }
-            },
-            physics: {
-              solver: 'forceAtlas2Based',
-              forceAtlas2Based: {
-                gravitationalConstant: -50,
-                centralGravity: 0.01,
-                springLength: 200,
-                springConstant: 0.08
-              }
-            },
-            interaction: {
-              tooltipDelay: 100,
-              hover: true
-            },
-            groups: {
-              useDefaultGroups: true,
-            }
-          };
-          const network = new vis.Network(container, data, options);
-
-          network.on("afterDrawing", function (ctx) {
-            var nodeId = network.getNodeAt(network.canvas.getPointer());
-            if (nodeId) {
-                network.body.nodes[nodeId].setOptions({
-                    shadow: {
-                        enabled: true,
-                        color: 'rgba(0,0,0,0.2)',
-                        size: 15,
-                        x: 5,
-                        y: 5
-                    }
-                });
-            }
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>Broch Map</title>
+      <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+      <style>
+        body { font-family: sans-serif; }
+        #network { width: 100%; height: 98vh; border: 1px solid #e2e2e2; background-color: #f7f7f7; }
+        #legend { display: none; position: absolute; top: 15px; left: 15px; background-color: rgba(255, 255, 255, 0.9); border: 1px solid #e2e2e2; border-radius: 8px; padding: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .vis-tooltip { background-color: #fff !important; border: 1px solid #ccc !important; border-radius: 8px !important; padding: 10px !important; box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important; font-family: sans-serif !important; color: #333 !important; }
+      </style>
+    </head>
+    <body>
+      <div id="network"></div>
+      <div id="legend"><h3>Color Legend</h3><div style="background-color: #E44D26; color: white; padding: 3px 6px; margin-bottom: 3px; border-radius: 4px; font-size: 12px;">Html</div><div style="background-color: #1572B6; color: white; padding: 3px 6px; margin-bottom: 3px; border-radius: 4px; font-size: 12px;">Css</div><div style="background-color: #F7DF1E; color: black; padding: 3px 6px; margin-bottom: 3px; border-radius: 4px; font-size: 12px;">JS/TS</div><div style="background-color: #777BB4; color: black; padding: 3px 6px; margin-bottom: 3px; border-radius: 4px; font-size: 12px;">Php</div><div style="background-color: #4CAF50; color: black; padding: 3px 6px; margin-bottom: 3px; border-radius: 4px; font-size: 12px;">Image</div><div style="background-color: #DE3423; color: white; padding: 3px 6px; margin-bottom: 3px; border-radius: 4px; font-size: 12px;">Rust</div><div style="background-color: #000000; color: white; padding: 3px 6px; margin-bottom: 3px; border-radius: 4px; font-size: 12px;">Json</div><div style="background-color: #cb171e; color: white; padding: 3px 6px; margin-bottom: 3px; border-radius: 4px; font-size: 12px;">YML</div><div style="background-color: #000000; color: white; padding: 3px 6px; margin-bottom: 3px; border-radius: 4px; font-size: 12px;">Markdown</div><div style="background-color: #3776AB; color: white; padding: 3px 6px; margin-bottom: 3px; border-radius: 4px; font-size: 12px;">Python</div><div style="background-color: #b07219; color: white; padding: 3px 6px; margin-bottom: 3px; border-radius: 4px; font-size: 12px;">Java</div><div style="background-color: #CCCCCC; color: black; padding: 3px 6px; margin-bottom: 3px; border-radius: 4px; font-size: 12px;">Other</div></div>
+      <button id="toggle-legend">Toggle Legend</button>
+      <script>
+        const nodes = new vis.DataSet([{"id":"/app/tsconfig.json","label":"tsconfig.json","color":"#000000","title":"Path: /app/tsconfig.json<br>Size: 364 bytes<br>Modified: 10/31/2025","group":"/app"},{"id":"/app/package.json","label":"package.json","color":"#000000","title":"Path: /app/package.json<br>Size: 805 bytes<br>Modified: 10/31/2025","group":"/app"},{"id":"/app/package-lock.json","label":"package-lock.json","color":"#000000","title":"Path: /app/package-lock.json<br>Size: 134441 bytes<br>Modified: 10/31/2025","group":"/app"},{"id":"/app/brochMap.html","label":"brochMap.html","color":"#E44D26","title":"Path: /app/brochMap.html<br>Size: 5788 bytes<br>Modified: 10/31/2025","group":"/app"},{"id":"/app/broch.config.json","label":"broch.config.json","color":"#000000","title":"Path: /app/broch.config.json<br>Size: 326 bytes<br>Modified: 10/31/2025","group":"/app"},{"id":"/app/Dockerfile","label":"Dockerfile","color":"#CCCCCC","title":"Path: /app/Dockerfile<br>Size: 341 bytes<br>Modified: 10/31/2025","group":"/app"},{"id":"/app/.gitignore","label":".gitignore","color":"#CCCCCC","title":"Path: /app/.gitignore<br>Size: 31 bytes<br>Modified: 10/31/2025","group":"/app"},{"id":"/app/src/types.ts","label":"types.ts","color":"#F7DF1E","title":"Path: /app/src/types.ts<br>Size: 185 bytes<br>Modified: 10/31/2025","group":"/app/src"},{"id":"/app/src/scanner.ts","label":"scanner.ts","color":"#F7DF1E","title":"Path: /app/src/scanner.ts<br>Size: 1789 bytes<br>Modified: 10/31/2025","group":"/app/src"},{"id":"/app/src/index.ts","label":"index.ts","color":"#F7DF1E","title":"Path: /app/src/index.ts<br>Size: 1677 bytes<br>Modified: 10/31/2025","group":"/app/src"},{"id":"/app/src/index.js.map","label":"index.js.map","color":"#CCCCCC","title":"Path: /app/src/index.js.map<br>Size: 786 bytes<br>Modified: 10/31/2025","group":"/app/src"},{"id":"/app/src/index.js","label":"index.js","color":"#F7DF1E","title":"Path: /app/src/index.js<br>Size: 1008 bytes<br>Modified: 10/31/2025","group":"/app/src"},{"id":"/app/src/index.d.ts.map","label":"index.d.ts.map","color":"#CCCCCC","title":"Path: /app/src/index.d.ts.map<br>Size: 97 bytes<br>Modified: 10/31/2025","group":"/app/src"},{"id":"/app/src/index.d.ts","label":"index.d.ts","color":"#F7DF1E","title":"Path: /app/src/index.d.ts<br>Size: 66 bytes<br>Modified: 10/31/2025","group":"/app/src"},{"id":"/app/src/html.ts","label":"html.ts","color":"#F7DF1E","title":"Path: /app/src/html.ts<br>Size: 4726 bytes<br>Modified: 10/31/2025","group":"/app/src"},{"id":"/app/src/dependencies.ts","label":"dependencies.ts","color":"#F7DF1E","title":"Path: /app/src/dependencies.ts<br>Size: 3085 bytes<br>Modified: 10/31/2025","group":"/app/src"},{"id":"/app/src/config.ts","label":"config.ts","color":"#F7DF1E","title":"Path: /app/src/config.ts<br>Size: 1085 bytes<br>Modified: 10/31/2025","group":"/app/src"},{"id":"/app/src/commands.ts","label":"commands.ts","color":"#F7DF1E","title":"Path: /app/src/commands.ts<br>Size: 1039 bytes<br>Modified: 10/31/2025","group":"/app/src"},{"id":"/app/src/cli.ts","label":"cli.ts","color":"#F7DF1E","title":"Path: /app/src/cli.ts<br>Size: 545 bytes<br>Modified: 10/31/2025","group":"/app/src"},{"id":"/app/src/asciify.d.ts","label":"asciify.d.ts","color":"#F7DF1E","title":"Path: /app/src/asciify.d.ts<br>Size: 257 bytes<br>Modified: 10/31/2025","group":"/app/src"},{"id":"/app/dist/types.js.map","label":"types.js.map","color":"#CCCCCC","title":"Path: /app/dist/types.js.map<br>Size: 102 bytes<br>Modified: 10/31/2025","group":"/app/dist"},{"id":"/app/dist/types.js","label":"types.js","color":"#F7DF1E","title":"Path: /app/dist/types.js<br>Size: 110 bytes<br>Modified: 10/31/2025","group":"/app/dist"},{"id":"/app/dist/scanner.js.map","label":"scanner.js.map","color":"#CCCCCC","title":"Path: /app/dist/scanner.js.map<br>Size: 2768 bytes<br>Modified: 10/31/2025","group":"/app/dist"},{"id":"/app/dist/scanner.js","label":"scanner.js","color":"#F7DF1E","title":"Path: /app/dist/scanner.js<br>Size: 5672 bytes<br>Modified: 10/31/2025","group":"/app/dist"},{"id":"/app/dist/index.js.map","label":"index.js.map","color":"#CCCCCC","title":"Path: /app/dist/index.js.map<br>Size: 1802 bytes<br>Modified: 10/31/2025","group":"/app/dist"},{"id":"/app/dist/index.js","label":"index.js","color":"#F7DF1E","title":"Path: /app/dist/index.js<br>Size: 3043 bytes<br>Modified: 10/31/2025","group":"/app/dist"},{"id":"/app/dist/html.js.map","label":"html.js.map","color":"#CCCCCC","title":"Path: /app/dist/html.js.map<br>Size: 2836 bytes<br>Modified: 10/31/2025","group":"/app/dist"},{"id":"/app/dist/html.js","label":"html.js","color":"#F7DF1E","title":"Path: /app/dist/html.js<br>Size: 4995 bytes<br>Modified: 10/31/2025","group":"/app/dist"},{"id":"/app/dist/dependencies.js.map","label":"dependencies.js.map","color":"#CCCCCC","title":"Path: /app/dist/dependencies.js.map<br>Size: 2150 bytes<br>Modified: 10/31/2025","group":"/app/dist"},{"id":"/app/dist/dependencies.js","label":"dependencies.js","color":"#F7DF1E","title":"Path: /app/dist/dependencies.js<br>Size: 3361 bytes<br>Modified: 10/31/2025","group":"/app/dist"},{"id":"/app/dist/config.js.map","label":"config.js.map","color":"#CCCCCC","title":"Path: /app/dist/config.js.map<br>Size: 1180 bytes<br>Modified: 10/31/2025","group":"/app/dist"},{"id":"/app/dist/config.js","label":"config.js","color":"#F7DF1E","title":"Path: /app/dist/config.js<br>Size: 1410 bytes<br>Modified: 10/31/2025","group":"/app/dist"},{"id":"/app/dist/commands.js.map","label":"commands.js.map","color":"#CCCCCC","title":"Path: /app/dist/commands.js.map<br>Size: 921 bytes<br>Modified: 10/31/2025","group":"/app/dist"},{"id":"/app/dist/commands.js","label":"commands.js","color":"#F7DF1E","title":"Path: /app/dist/commands.js<br>Size: 1305 bytes<br>Modified: 10/31/2025","group":"/app/dist"},{"id":"/app/dist/cli.js.map","label":"cli.js.map","color":"#CCCCCC","title":"Path: /app/dist/cli.js.map<br>Size: 588 bytes<br>Modified: 10/31/2025","group":"/app/dist"},{"id":"/app/dist/cli.js","label":"cli.js","color":"#F7DF1E","title":"Path: /app/dist/cli.js<br>Size: 959 bytes<br>Modified: 10/31/2025","group":"/app/dist"},{"id":"/app/assets/logo.png","label":"logo.png","color":"#4CAF50","title":"Path: /app/assets/logo.png<br>Size: 14348 bytes<br>Modified: 10/31/2025","group":"/app/assets"}]);
+        const edges = new vis.DataSet([{"from":"/app/src/scanner.ts","to":"/app/src/dependencies.ts","arrows":"to"},{"from":"/app/src/scanner.ts","to":"/app/src/html.ts","arrows":"to"},{"from":"/app/src/index.ts","to":"/app/src/cli.ts","arrows":"to"},{"from":"/app/src/html.ts","to":"/app/src/config.ts","arrows":"to"},{"from":"/app/src/html.ts","to":"/app/src/types.ts","arrows":"to"},{"from":"/app/src/commands.ts","to":"/app/src/scanner.ts","arrows":"to"},{"from":"/app/src/commands.ts","to":"/app/src/config.ts","arrows":"to"},{"from":"/app/src/cli.ts","to":"/app/src/commands.ts","arrows":"to"},{"from":"/app/dist/scanner.js","to":"/app/dist/dependencies.js","arrows":"to"},{"from":"/app/dist/scanner.js","to":"/app/dist/html.js","arrows":"to"},{"from":"/app/dist/index.js","to":"/app/dist/cli.js","arrows":"to"},{"from":"/app/dist/html.js","to":"/app/dist/config.js","arrows":"to"},{"from":"/app/dist/commands.js","to":"/app/dist/scanner.js","arrows":"to"},{"from":"/app/dist/commands.js","to":"/app/dist/config.js","arrows":"to"},{"from":"/app/dist/cli.js","to":"/app/dist/commands.js","arrows":"to"}]);
+        const container = document.getElementById('network');
+        const data = { nodes, edges };
+        const options = {
+          nodes: { shape: 'box', margin: 10, font: { size: 14, color: '#333' }, borderWidth: 1, shadow: true },
+          edges: { width: 1, color: { color: '#848484', highlight: '#333' }, arrows: { to: { enabled: true, scaleFactor: 0.5 } } },
+          physics: { solver: 'forceAtlas2Based', forceAtlas2Based: { gravitationalConstant: -50, centralGravity: 0.01, springLength: 200, springConstant: 0.08 } },
+          interaction: { tooltipDelay: 100, hover: true },
+          groups: { useDefaultGroups: true }
+        };
+        const network = new vis.Network(container, data, options);
+        document.getElementById('toggle-legend').addEventListener('click', () => {
+          const legend = document.getElementById('legend');
+          legend.style.display = legend.style.display === 'none' ? 'block' : 'none';
         });
-          document.getElementById('toggle-legend').addEventListener('click', () => {
-            const legend = document.getElementById('legend');
-            legend.style.display = legend.style.display === 'none' ? 'block' : 'none';
-          });
-        </script>
-      </body>
-    </html>
+      </script>
+    </body>
+  </html>

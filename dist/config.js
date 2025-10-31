@@ -10,25 +10,18 @@ const configFilePath = path_1.default.resolve(process.cwd(), CONFIG_FILE_NAME);
 const defaultConfig = {
     outputFileName: 'brochMap.html',
     colors: {
-        html: '#E44D26', // Orange
-        css: '#1572B6', // Blue
-        js: '#F7DF1E', // Yellow
-        php: '#777BB4', // Purple
-        image: '#4CAF50', // Green
-        rust: '#DE3423', // Rust Orange
-        json: '#000000', // Black
-        yml: '#cb171e', // Red
-        md: '#000000', // Black
-        py: '#3776AB', // Blue
-        java: '#b07219', // Brown
-        other: '#CCCCCC', // Light Gray
+        html: '#E44D26', css: '#1572B6', js: '#F7DF1E', php: '#777BB4',
+        image: '#4CAF50', rust: '#DE3423', json: '#000000', yml: '#cb171e',
+        md: '#000000', py: '#3776AB', java: '#b07219', other: '#CCCCCC',
+    },
+    labels: {
+        js: 'JS/TS', yml: 'YML', md: 'Markdown', py: 'Python', java: 'Java',
     },
 };
 let config = defaultConfig;
 if ((0, fs_1.existsSync)(configFilePath)) {
     const userConfig = JSON.parse((0, fs_1.readFileSync)(configFilePath, 'utf-8'));
-    // Deep merge user config with default config
-    config = Object.assign(Object.assign(Object.assign({}, defaultConfig), userConfig), { colors: Object.assign(Object.assign({}, defaultConfig.colors), (userConfig.colors || {})) });
+    config = Object.assign(Object.assign(Object.assign({}, defaultConfig), userConfig), { colors: Object.assign(Object.assign({}, defaultConfig.colors), (userConfig.colors || {})), labels: Object.assign(Object.assign({}, defaultConfig.labels), (userConfig.labels || {})) });
 }
 else {
     (0, fs_1.writeFileSync)(configFilePath, JSON.stringify(defaultConfig, null, 2));

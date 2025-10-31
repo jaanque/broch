@@ -3,41 +3,57 @@
 import { buildCli } from './cli';
 import asciify from 'asciify-image';
 import path from 'path';
+import chalk from 'chalk';
 
 const MIN_NODE_VERSION = 12;
 
-async function showLogo() {
+/**
+ * Muestra el logo de la aplicación como arte ASCII.
+ */
+async function showLogo(): Promise<void> {
   const logoPath = path.join(__dirname, '..', 'assets', 'logo.png');
   try {
-    const asciiArt = await new Promise((resolve, reject) => {
-      asciify(logoPath, { fit: 'box', width: 40 }, (err, asciified) => {
+    const asciiArt = await new Promise<string | string[]>((resolve, reject) => {
+      asciify(logoPath, { fit: 'box', width: 40 }, (err: Error, asciified: string | string[]) => {
         if (err) return reject(err);
         resolve(asciified);
       });
     });
-    console.log(asciiArt);
+    console.log(chalk.yellow(Array.isArray(asciiArt) ? asciiArt.join('\n') : asciiArt));
   } catch (error) {
-    // No hacer nada si hay un error
+    console.error(chalk.red('Error al mostrar el logo:'), error);
   }
 }
 
-function checkNodeVersion() {
+/**
+ * Verifica que la versión de Node.js sea compatible.
+ */
+function checkNodeVersion(): void {
   const majorVersion = parseInt(process.versions.node.split('.')[0], 10);
   if (majorVersion < MIN_NODE_VERSION) {
-    console.error(`Error: Se requiere Node.js v${MIN_NODE_VERSION} o superior. Versión actual: ${process.versions.node}`);
+    console.error(chalk.red(`Error: Se requiere Node.js v${MIN_NODE_VERSION} o superior. Versión actual: ${process.versions.node}`));
     process.exit(1);
   }
 }
 
-async function main() {
-  checkNodeVersion();
+/**
+ * Función principal que inicializa el CLI.
+ */
+async function main(): Promise<void> {
+  try {
+    checkNodeVersion();
 
-  const cli = buildCli();
-  const argv = await cli.argv;
+    const cli = buildCli();
+    const argv = await cli.argv;
 
-  if (!(argv as any)._[0] || argv.help) {
-    await showLogo();
-    cli.showHelp();
+    // Mostrar ayuda si no se proporcionan comandos o si se solicita explícitamente.
+    if (!(argv as any)._[0] || argv.help) {
+      await showLogo();
+      cli.showHelp();
+    }
+  } catch (error) {
+    console.error(chalk.red('Ha ocurrido un error inesperado:'), error);
+    process.exit(1);
   }
 }
 

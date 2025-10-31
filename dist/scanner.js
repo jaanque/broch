@@ -54,6 +54,9 @@ const path_1 = __importDefault(require("path"));
 const inquirer_1 = __importDefault(require("inquirer"));
 const chalk_1 = __importDefault(require("chalk"));
 const ora_1 = __importDefault(require("ora"));
+/**
+ * Comprueba si una ruta es un directorio.
+ */
 const isDirectory = (source) => {
     try {
         return (0, fs_1.lstatSync)(source).isDirectory();
@@ -62,43 +65,59 @@ const isDirectory = (source) => {
         return false;
     }
 };
+/**
+ * Obtiene los directorios de una ruta.
+ */
 const getDirectories = (source) => (0, fs_1.readdirSync)(source).map(name => path_1.default.join(source, name)).filter(isDirectory);
+/**
+ * Solicita al usuario que seleccione un directorio.
+ */
+function selectDirectory() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const directories = getDirectories(process.cwd());
+        const answer = yield inquirer_1.default.prompt([
+            {
+                type: 'list',
+                name: 'selectedDirectory',
+                message: chalk_1.default.bold('Selecciona el directorio a escanear:'),
+                choices: ['.', ...directories],
+            },
+        ]);
+        return answer.selectedDirectory;
+    });
+}
+/**
+ * Escanea un directorio y genera un mapa de dependencias.
+ */
 function scan(directory, excludePatterns) {
     return __awaiter(this, void 0, void 0, function* () {
-        let selectedDirectory = directory;
-        if (!selectedDirectory) {
-            const directories = getDirectories(process.cwd());
-            const answer = yield inquirer_1.default.prompt([
-                {
-                    type: 'list',
-                    name: 'selectedDirectory',
-                    message: chalk_1.default.bold('Selecciona el directorio a escanear:'),
-                    choices: ['.', ...directories],
-                },
-            ]);
-            selectedDirectory = answer.selectedDirectory;
-        }
-        if (!selectedDirectory) {
-            console.log(chalk_1.default.yellow('No se ha seleccionado ningún directorio.'));
-            return;
-        }
-        let exclusions = ['node_modules/**', '.git/**'];
-        if (excludePatterns) {
-            exclusions.push(...excludePatterns.split(',').map((p) => p.trim()));
-        }
-        const spinner = (0, ora_1.default)('Escaneando archivos...').start();
+        const spinner = (0, ora_1.default)();
         try {
-            const searchPath = selectedDirectory || '.';
-            const files = glob.sync(`${searchPath}/**/*`, { ignore: exclusions, dot: true, nodir: true });
+            let selectedDirectory = directory;
+            if (!selectedDirectory) {
+                selectedDirectory = yield selectDirectory();
+            }
+            if (!selectedDirectory) {
+                console.log(chalk_1.default.yellow('No se ha seleccionado ningún directorio.'));
+                return;
+            }
+            spinner.start('Escaneando archivos...');
+            const exclusions = ['node_modules/**', '.git/**'];
+            if (excludePatterns) {
+                exclusions.push(...excludePatterns.split(',').map((p) => p.trim()));
+            }
+            const files = glob.sync(`${selectedDirectory}/**/*`, { ignore: exclusions, dot: true, nodir: true });
             const absoluteFiles = files.map(file => path_1.default.resolve(file));
             const filesSet = new Set(absoluteFiles);
             const dependencies = new Map();
             for (const file of absoluteFiles) {
+                spinner.text = `Analizando: ${chalk_1.default.cyan(file)}`;
                 const deps = (0, dependencies_1.detectDependencies)(file, filesSet);
                 if (deps.length > 0) {
                     dependencies.set(file, deps);
                 }
             }
+            spinner.text = 'Generando mapa HTML...';
             (0, html_1.generateHtml)(absoluteFiles, dependencies, selectedDirectory);
             spinner.succeed(chalk_1.default.green('Mapa generado exitosamente.'));
         }

@@ -16,7 +16,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const cli_1 = require("./cli");
 const asciify_image_1 = __importDefault(require("asciify-image"));
 const path_1 = __importDefault(require("path"));
+const chalk_1 = __importDefault(require("chalk"));
 const MIN_NODE_VERSION = 12;
+/**
+ * Muestra el logo de la aplicación como arte ASCII.
+ */
 function showLogo() {
     return __awaiter(this, void 0, void 0, function* () {
         const logoPath = path_1.default.join(__dirname, '..', 'assets', 'logo.png');
@@ -28,28 +32,41 @@ function showLogo() {
                     resolve(asciified);
                 });
             });
-            console.log(asciiArt);
+            console.log(chalk_1.default.yellow(Array.isArray(asciiArt) ? asciiArt.join('\n') : asciiArt));
         }
         catch (error) {
-            // No hacer nada si hay un error
+            console.error(chalk_1.default.red('Error al mostrar el logo:'), error);
         }
     });
 }
+/**
+ * Verifica que la versión de Node.js sea compatible.
+ */
 function checkNodeVersion() {
     const majorVersion = parseInt(process.versions.node.split('.')[0], 10);
     if (majorVersion < MIN_NODE_VERSION) {
-        console.error(`Error: Se requiere Node.js v${MIN_NODE_VERSION} o superior. Versión actual: ${process.versions.node}`);
+        console.error(chalk_1.default.red(`Error: Se requiere Node.js v${MIN_NODE_VERSION} o superior. Versión actual: ${process.versions.node}`));
         process.exit(1);
     }
 }
+/**
+ * Función principal que inicializa el CLI.
+ */
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
-        checkNodeVersion();
-        const cli = (0, cli_1.buildCli)();
-        const argv = yield cli.argv;
-        if (!argv._[0] || argv.help) {
-            yield showLogo();
-            cli.showHelp();
+        try {
+            checkNodeVersion();
+            const cli = (0, cli_1.buildCli)();
+            const argv = yield cli.argv;
+            // Mostrar ayuda si no se proporcionan comandos o si se solicita explícitamente.
+            if (!argv._[0] || argv.help) {
+                yield showLogo();
+                cli.showHelp();
+            }
+        }
+        catch (error) {
+            console.error(chalk_1.default.red('Ha ocurrido un error inesperado:'), error);
+            process.exit(1);
         }
     });
 }
