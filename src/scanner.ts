@@ -3,6 +3,7 @@ import { lstatSync, readdirSync } from 'fs';
 import { detectDependencies } from './dependencies';
 import { generateHtml } from './html';
 import path from 'path';
+import config from './config';
 import inquirer from 'inquirer';
 import chalk from 'chalk';
 import ora, { Ora } from 'ora';
@@ -88,6 +89,9 @@ export async function scan(directory?: string, excludePatterns?: string): Promis
         spinner.text = 'Generando mapa HTML...';
         generateHtml(absoluteFiles, dependencies, selectedDirectory);
         spinner.succeed(chalk.green('Mapa generado exitosamente.'));
+
+        const outputPath = path.resolve(selectedDirectory, config.outputFileName);
+        console.log(chalk.cyan(`\nEl mapa se ha guardado en: ${outputPath}`));
 
     } catch (error) {
         spinner.fail(chalk.red('Ha ocurrido un error durante el escaneo.'));
