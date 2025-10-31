@@ -14,9 +14,17 @@ async function showLogo(): Promise<void> {
   const logoPath = path.join(__dirname, '..', 'assets', 'logo.png');
   try {
     const asciiArt = await new Promise<string>((resolve, reject) => {
-      asciify(logoPath, { fit: 'box', width: 15, color: false }, (err, asciified) => {
+      asciify(logoPath, { fit: 'box', width: 12, color: false }, (err, asciified) => {
         if (err) return reject(err);
-        resolve(asciified as string);
+
+        // Procesa el arte ASCII para dejar solo la silueta.
+        const silhouette = (asciified as string)
+          .split('\n')
+          .map(line => line.replace(/;/g, ' ').trimEnd())
+          .join('\n')
+          .trim(); // Elimina líneas vacías al principio y al final.
+
+        resolve(silhouette);
       });
     });
     console.log(chalk.white(asciiArt));

@@ -26,10 +26,16 @@ function showLogo() {
         const logoPath = path_1.default.join(__dirname, '..', 'assets', 'logo.png');
         try {
             const asciiArt = yield new Promise((resolve, reject) => {
-                (0, asciify_image_1.default)(logoPath, { fit: 'box', width: 15, color: false }, (err, asciified) => {
+                (0, asciify_image_1.default)(logoPath, { fit: 'box', width: 12, color: false }, (err, asciified) => {
                     if (err)
                         return reject(err);
-                    resolve(asciified);
+                    // Procesa el arte ASCII para dejar solo la silueta.
+                    const silhouette = asciified
+                        .split('\n')
+                        .map(line => line.replace(/;/g, ' ').trimEnd())
+                        .join('\n')
+                        .trim(); // Elimina líneas vacías al principio y al final.
+                    resolve(silhouette);
                 });
             });
             console.log(chalk_1.default.white(asciiArt));
