@@ -69,6 +69,8 @@ broch m
 
 Scan selected directory: Simply run the command in your project's root, and broch will give you a list of current directories, select the one you want, and you're done.
 
+![Vista previa del mapa de dependencias](assets/demo.PNG)
+
 ##
 
 ```bash
@@ -115,6 +117,36 @@ broch h
 ```
 
 ## 🔧 Configuration (broch.config.json)
+
+```bash
+{
+  "outputFileName": "brochMap.html",
+  "colors": {
+    "html": "#E44D26",
+    "css": "#1572B6",
+    "js": "#F7DF1E",
+    "php": "#777BB4",
+    "image": "#4CAF50",
+    "rust": "#DE3423",
+    "json": "#000000",
+    "yml": "#cb171e",
+    "md": "#000000",
+    "py": "#3776AB",
+    "java": "#b07219",
+    "other": "#CCCCCC"
+  },
+  "labels": {
+    "js": "JS/TS",
+    "yml": "YML",
+    "md": "Markdown",
+    "py": "Python",
+    "java": "Java"
+  }
+}
+```
+
+##
+
 The first time you run Broch, a broch.config.json file will be automatically created in your directory. This file allows you to customize the tool according to your preferences.
 
 **outputFileName:** Define the name of the HTML file that will be generated.

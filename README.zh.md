@@ -69,6 +69,8 @@ broch m
 
 扫描选定目录：只需在项目根目录运行命令，broch 会为您列出当前目录列表，选择您想要的目录即可。
 
+![Vista previa del mapa de dependencias](assets/demo.PNG)
+
 ##
 
 ```bash
@@ -114,6 +116,36 @@ broch h
 ```
 
 ## 🔧 配置 (broch.config.json)
+
+```bash
+{
+  "outputFileName": "brochMap.html",
+  "colors": {
+    "html": "#E44D26",
+    "css": "#1572B6",
+    "js": "#F7DF1E",
+    "php": "#777BB4",
+    "image": "#4CAF50",
+    "rust": "#DE3423",
+    "json": "#000000",
+    "yml": "#cb171e",
+    "md": "#000000",
+    "py": "#3776AB",
+    "java": "#b07219",
+    "other": "#CCCCCC"
+  },
+  "labels": {
+    "js": "JS/TS",
+    "yml": "YML",
+    "md": "Markdown",
+    "py": "Python",
+    "java": "Java"
+  }
+}
+```
+
+##
+
 第一次运行 Broch 时，会在您的目录中自动创建一个 broch.config.json 文件。此文件允许您根据偏好自定义工具。
 
 **outputFileName:** 定义将生成的 HTML 文件的名称。

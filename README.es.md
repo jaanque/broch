@@ -69,6 +69,8 @@ broch m
 
 Escanear directorio seleccionado: Simplemente ejecuta el comando en la raíz de tu proyecto, y broch te dará una lista de los directorios actuales, selecciona el que desees, y listo.
 
+![Vista previa del mapa de dependencias](assets/demo.PNG)
+
 ##
 
 ```bash
@@ -115,6 +117,36 @@ broch h
 ```
 
 ## 🔧 Configuración (broch.config.json)
+
+```bash
+{
+  "outputFileName": "brochMap.html",
+  "colors": {
+    "html": "#E44D26",
+    "css": "#1572B6",
+    "js": "#F7DF1E",
+    "php": "#777BB4",
+    "image": "#4CAF50",
+    "rust": "#DE3423",
+    "json": "#000000",
+    "yml": "#cb171e",
+    "md": "#000000",
+    "py": "#3776AB",
+    "java": "#b07219",
+    "other": "#CCCCCC"
+  },
+  "labels": {
+    "js": "JS/TS",
+    "yml": "YML",
+    "md": "Markdown",
+    "py": "Python",
+    "java": "Java"
+  }
+}
+```
+
+##
+
 La primera vez que ejecutes Broch, se creará automáticamente un archivo broch.config.json en tu directorio. Este archivo te permite personalizar la herramienta según tus preferencias.
 
 **outputFileName:** Define el nombre del archivo HTML que se generará.

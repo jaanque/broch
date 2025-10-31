@@ -69,6 +69,8 @@ broch m
 
 ディレクトリのスキャン: プロジェクトのルートでコマンドを実行するだけで、Brochが現在のディレクトリの一覧を表示します。スキャンしたいディレクトリを選択すれば完了です。
 
+![Vista previa del mapa de dependencias](assets/demo.PNG)
+
 ##
 
 ```bash
@@ -115,6 +117,36 @@ broch h
 ```
 
 ## 🔧 設定 (broch.config.json)
+
+```bash
+{
+  "outputFileName": "brochMap.html",
+  "colors": {
+    "html": "#E44D26",
+    "css": "#1572B6",
+    "js": "#F7DF1E",
+    "php": "#777BB4",
+    "image": "#4CAF50",
+    "rust": "#DE3423",
+    "json": "#000000",
+    "yml": "#cb171e",
+    "md": "#000000",
+    "py": "#3776AB",
+    "java": "#b07219",
+    "other": "#CCCCCC"
+  },
+  "labels": {
+    "js": "JS/TS",
+    "yml": "YML",
+    "md": "Markdown",
+    "py": "Python",
+    "java": "Java"
+  }
+}
+```
+
+##
+
 Brochを初めて実行すると、自動的にbroch.config.jsonファイルがディレクトリに作成されます。このファイルで好みに応じてツールをカスタマイズできます。
 
 **outputFileName:** 生成されるHTMLファイルの名前を定義します。
