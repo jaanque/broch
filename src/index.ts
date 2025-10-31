@@ -13,13 +13,13 @@ const MIN_NODE_VERSION = 12;
 async function showLogo(): Promise<void> {
   const logoPath = path.join(__dirname, '..', 'assets', 'logo.png');
   try {
-    const asciiArt = await new Promise<string | string[]>((resolve, reject) => {
-      asciify(logoPath, { fit: 'box', width: 40 }, (err: Error, asciified: string | string[]) => {
+    const asciiArt = await new Promise<string>((resolve, reject) => {
+      asciify(logoPath, { fit: 'box', width: 20, color: false }, (err, asciified) => {
         if (err) return reject(err);
-        resolve(asciified);
+        resolve(asciified as string);
       });
     });
-    console.log(chalk.yellow(Array.isArray(asciiArt) ? asciiArt.join('\n') : asciiArt));
+    console.log(chalk.yellow(asciiArt));
   } catch (error) {
     console.error(chalk.red('Error al mostrar el logo:'), error);
   }

@@ -26,13 +26,13 @@ function showLogo() {
         const logoPath = path_1.default.join(__dirname, '..', 'assets', 'logo.png');
         try {
             const asciiArt = yield new Promise((resolve, reject) => {
-                (0, asciify_image_1.default)(logoPath, { fit: 'box', width: 40 }, (err, asciified) => {
+                (0, asciify_image_1.default)(logoPath, { fit: 'box', width: 20, color: false }, (err, asciified) => {
                     if (err)
                         return reject(err);
                     resolve(asciified);
                 });
             });
-            console.log(chalk_1.default.yellow(Array.isArray(asciiArt) ? asciiArt.join('\n') : asciiArt));
+            console.log(chalk_1.default.yellow(asciiArt));
         }
         catch (error) {
             console.error(chalk_1.default.red('Error al mostrar el logo:'), error);
