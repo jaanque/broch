@@ -1,4 +1,3 @@
-
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import chalk from 'chalk';
@@ -12,7 +11,20 @@ export function buildCli() {
     .alias('h', 'help')
     .epilogue(`Para más información, visita nuestra documentación en ${chalk.underline('https://github.com/your-repo/broch')}`)
     .strict()
-    .demandCommand(0);
+    .demandCommand(0)
+    .strictCommands() // Activa el manejo estricto de comandos
+    .fail((msg, err) => {
+      // Personaliza el mensaje para comandos desconocidos
+      if (msg && msg.includes('Unknown command')) {
+        const args = hideBin(process.argv);
+        const command = args[0] || ''; // Obtiene el comando de los argumentos del proceso
+        console.error(chalk.red(`\nError: El comando "${command}" no es correcto.`));
+        console.info(chalk.cyan('Por favor, ejecuta "broch --help" para más información.\n'));
+      } else {
+        console.error(chalk.red(`\nError: ${msg || 'Ha ocurrido un error.'}`));
+      }
+      process.exit(1);
+    });
 
   setupCommands(cli);
 

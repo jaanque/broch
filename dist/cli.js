@@ -16,7 +16,21 @@ function buildCli() {
         .alias('h', 'help')
         .epilogue(`Para más información, visita nuestra documentación en ${chalk_1.default.underline('https://github.com/your-repo/broch')}`)
         .strict()
-        .demandCommand(0);
+        .demandCommand(0)
+        .strictCommands() // Activa el manejo estricto de comandos
+        .fail((msg, err) => {
+        // Personaliza el mensaje para comandos desconocidos
+        if (msg && msg.includes('Unknown command')) {
+            const args = (0, helpers_1.hideBin)(process.argv);
+            const command = args[0] || ''; // Obtiene el comando de los argumentos del proceso
+            console.error(chalk_1.default.red(`\nError: El comando "${command}" no es correcto.`));
+            console.info(chalk_1.default.cyan('Por favor, ejecuta "broch --help" para más información.\n'));
+        }
+        else {
+            console.error(chalk_1.default.red(`\nError: ${msg || 'Ha ocurrido un error.'}`));
+        }
+        process.exit(1);
+    });
     (0, commands_1.setupCommands)(cli);
     return cli;
 }
