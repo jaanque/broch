@@ -4,7 +4,15 @@
 
 <p align="center"> <strong>Visualiza la arquitectura de tu proyecto de forma sencilla e interactiva.</strong> </p>
 
-<p align="center"> <a href=""> <img src="" alt="NPM Version"> </a> <a href=""> <img src="" alt="License"> </a> </p>
+
+<p align="center">
+  <img src="https://img.shields.io/github/last-commit/jaanque/broch/main" alt="GitHub last commit (branch)">
+  <img src="https://img.shields.io/npm/v/broch" alt="NPM Version">
+  <img src="https://img.shields.io/npm/unpacked-size/broch" alt="NPM Unpacked Size">
+  <img src="https://img.shields.io/npm/l/broch" alt="NPM License">
+  <img src="https://img.shields.io/npm/d18m/broch" alt="NPM Downloads">
+</p>
+
 
 Broch es una herramienta de línea de comandos (CLI) diseñada para analizar la estructura de tus proyectos y generar un mapa de dependencias interactivo. Con Broch, puedes obtener una visión clara y gráfica de cómo están interconectados tus archivos, facilitando la comprensión, el mantenimiento y la depuración de tu código.
 
